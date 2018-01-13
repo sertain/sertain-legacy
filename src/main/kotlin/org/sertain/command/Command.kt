@@ -14,11 +14,11 @@ abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS
 
     fun cancel() = command.cancel()
 
-    fun onCreate() = Unit
+    open fun onCreate() = Unit
 
     abstract fun execute(): Boolean
 
-    fun onDestroy() = Unit
+    open fun onDestroy() = Unit
 }
 
 private interface Requirable {
