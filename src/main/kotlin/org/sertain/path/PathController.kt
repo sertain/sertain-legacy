@@ -12,9 +12,9 @@ fun ConfigureTrajectory(maximumVelocity: Double,
                         deltaTime: Double = 0.05,
                         fitMethod: PathFitMethod = PathFitMethod.HERMITE_CUBIC,
                         samples: Int = Trajectory.Config.SAMPLES_HIGH): Trajectory.Config {
-    return Trajectory.Config(fitMethod,samples,deltaTime,maximumVelocity,maximumAcceleration,maximumJerk)
+    return Trajectory.Config(fitMethod, samples, deltaTime, maximumVelocity, maximumAcceleration, maximumJerk)
 }
 
 fun Trajectory.Config.generate(points: Array<Waypoint>): Trajectory {
-    return Pathfinder.generate(points,this)
+    return Pathfinder.generate(points, this)
 }
