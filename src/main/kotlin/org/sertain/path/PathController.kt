@@ -3,32 +3,17 @@ package org.sertain.path
 import jaci.pathfinder.Pathfinder
 import jaci.pathfinder.Trajectory
 import jaci.pathfinder.Waypoint
-import jaci.pathfinder.followers.EncoderFollower
-import jaci.pathfinder.modifiers.TankModifier
 
 typealias PathFitMethod = Trajectory.FitMethod
 
-class Path {
-    var pathWaypoints = ArrayList<Waypoint>()
-    var fitMethod = Trajectory.FitMethod.HERMITE_CUBIC
-    var dt: Double = 0.05
-    var maxVel = 1.7
-    var maxAccel = 2.0
-    var maxJerk = 60.0
-    var wheelDistance = 0.5
+fun ConfigureTrajectory(deltaTime: Double = 0.05,
+                        maximumVelocity: Double = 1.7,
+                        maximumAcceleration: Double = 2.0,
+                        maximumJerk: Double = 60.0,
+                        fitMethod: PathFitMethod = PathFitMethod.HERMITE_CUBIC): Trajectory.Config {
+    return Trajectory.Config(fitMethod,Trajectory.Config.SAMPLES_HIGH,deltaTime,maximumVelocity,maximumAcceleration,maximumJerk)
+}
 
-    fun setPath(path: Array<Waypoint>) {
-        for(waypoint in path) {
-            pathWaypoints.add(waypoint)
-        }
-    }
-
-    fun configureTrajectory(deltaTime: Double?, maximumVelocity: Double?, maximumAcceleration: Double?, maximumJerk: Double?, fitMethod: PathFitMethod?, wheelDistance: Double?) {
-        if(deltaTime!=null) dt = deltaTime
-        if(maximumVelocity!=null) maxVel = maximumVelocity
-        if(maximumAcceleration!=null) maxAccel = maximumAcceleration
-        if(maximumJerk!=null) maxJerk = maximumJerk
-        if(fitMethod!=null) this.fitMethod = fitMethod
-        if(wheelDistance!=null) this.wheelDistance = wheelDistance
-    }
+fun Trajectory.Config.generate(points: Array<Waypoint>): Trajectory {
+    return Pathfinder.generate(points,this)
 }
