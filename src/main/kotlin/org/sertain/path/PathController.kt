@@ -6,41 +6,29 @@ import jaci.pathfinder.Waypoint
 import jaci.pathfinder.followers.EncoderFollower
 import jaci.pathfinder.modifiers.TankModifier
 
-object PathController {
-    val pathCoordinates = ArrayList<Triple<Double, Double, Double>>()
+typealias PathFitMethod = Trajectory.FitMethod
 
-    var dt = 0.05
-    var max_vel = 1.7
-    var max_accel = 2.0
-    var max_jerk = 60.0
+class Path {
+    var pathWaypoints = ArrayList<Waypoint>()
+    var fitMethod = Trajectory.FitMethod.HERMITE_CUBIC
+    var dt: Double = 0.05
+    var maxVel = 1.7
+    var maxAccel = 2.0
+    var maxJerk = 60.0
+    var wheelDistance = 0.5
 
-
-    fun addPath(xcoord: Double, ycoord: Double, radians: Double) {
-        pathCoordinates += Triple(xcoord, ycoord, radians)
-    }
-
-    fun configTrajectory(dt: Double, maximumVelocity: Double, maximumAcceleration: Double, maximumJerk: Double) {
-        this.dt = dt
-        this.max_vel = maximumVelocity
-        this.max_accel = maximumAcceleration
-        this.max_jerk = maximumJerk
-    }
-
-    fun generateEncoderFollowers() {
-        val points = ArrayList<Waypoint>()
-        for (coordset: Triple<Double, Double, Double> in pathCoordinates) {
-            points.add(Waypoint(coordset.first, coordset.second, coordset.third))
+    fun setPath(path: Array<Waypoint>) {
+        for(waypoint in path) {
+            pathWaypoints.add(waypoint)
         }
-        // Create Trajectory
-        val config = Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, this.dt, this.max_vel, this.max_accel, this.max_jerk)
-        val pointArray: Array<Waypoint> = points.toTypedArray()
-        val trajectory = Pathfinder.generate(pointArray, config)
+    }
 
-        val tank_drive_modifier: TankModifier = TankModifier(trajectory).modify(0.5)
-
-        // Setup EncoderFollowers
-
-        var left = tank_drive_modifier.leftTrajectory
-        var right = tank_drive_modifier.rightTrajectory
+    fun configureTrajectory(deltaTime: Double?, maximumVelocity: Double?, maximumAcceleration: Double?, maximumJerk: Double?, fitMethod: PathFitMethod?, wheelDistance: Double?) {
+        if(deltaTime!=null) dt = deltaTime
+        if(maximumVelocity!=null) maxVel = maximumVelocity
+        if(maximumAcceleration!=null) maxAccel = maximumAcceleration
+        if(maximumJerk!=null) maxJerk = maximumJerk
+        if(fitMethod!=null) this.fitMethod = fitMethod
+        if(wheelDistance!=null) this.wheelDistance = wheelDistance
     }
 }
