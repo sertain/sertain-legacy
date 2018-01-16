@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 private typealias WpiLibCommand = edu.wpi.first.wpilibj.command.Command
 
-abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS) {
+public abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS) {
     private val command = CommandMirror(this, timeout, unit)
 
     public fun requires(subsystem: Subsystem) = command.requires(subsystem)
@@ -32,13 +32,13 @@ private class CommandMirror(
         unit: TimeUnit
 ) : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
     @Suppress("RedundantOverride") // Needed for visibility override
-    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+    override public fun requires(subsystem: Subsystem) = super.requires(subsystem)
 
-    public override fun initialize() = command.onCreate()
+    override fun initialize() = command.onCreate()
 
-    public override fun isFinished(): Boolean = command.execute()
+    override fun isFinished(): Boolean = command.execute()
 
-    public override fun end() = command.onDestroy()
+    override fun end() = command.onDestroy()
 
-    public override fun execute() = Unit
+    override fun execute() = Unit
 }
