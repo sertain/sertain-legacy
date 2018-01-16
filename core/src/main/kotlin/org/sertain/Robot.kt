@@ -1,79 +1,78 @@
+@file:Suppress("unused", "RedundantVisibilityModifier")
 package org.sertain
 
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
 
-open class Robot : IterativeRobot() {
-    private enum class Mode {
-        AUTO, TELEOP, DISABLED
-    }
-
-    private var previousMode: Mode = Mode.DISABLED
-
-    private fun checkModeComplete(currentMode: Mode) {
-        if (currentMode != previousMode) {
-            when (previousMode) {
-                Mode.TELEOP -> onTeleopEnd()
-                Mode.AUTO -> onAutoEnd()
-                Mode.DISABLED -> onDisabledEnd()
+public abstract class Robot : IterativeRobot() {
+    private var mode = Mode.DISABLED
+        set(value) {
+            if (value != field) {
+                field = value
+                when (field) {
+                    Mode.TELEOP -> onTeleopStop()
+                    Mode.AUTO -> onAutoStop()
+                    Mode.DISABLED -> onDisabledStop()
+                }
             }
         }
+
+    override fun robotInit() = onCreate()
+
+    override fun teleopInit() {
+        onStart()
+        onTeleopStart()
     }
 
-    override fun robotInit() = onStart()
+    override fun autonomousInit() {
+        onStart()
+        onAutoStart()
+    }
 
-    override fun teleopInit() = onTeleopStart()
+    override fun disabledInit() = onStop()
 
-    override fun autonomousInit() = onAutoStart()
-
-    override fun disabledInit() = onDisabledStart()
-
-    override fun robotPeriodic() = execute()
+    override fun robotPeriodic() {
+        Scheduler.getInstance().run()
+        execute()
+    }
 
     override fun teleopPeriodic() {
-        Scheduler.getInstance().run()
-
-        checkModeComplete(Mode.TELEOP)
+        mode = Mode.TELEOP
         executeTeleop()
-
-        previousMode = Mode.TELEOP
     }
 
     override fun autonomousPeriodic() {
-        Scheduler.getInstance().run()
-
-        checkModeComplete(Mode.AUTO)
+        mode = Mode.AUTO
         executeAuto()
-
-        previousMode = Mode.AUTO
     }
 
     override fun disabledPeriodic() {
-        checkModeComplete(Mode.DISABLED)
-        executeDisabled()
-
-        previousMode = Mode.DISABLED
+        mode = Mode.DISABLED
     }
 
-    open fun onStart() {}
+    public open fun onCreate() = Unit
 
-    open fun onTeleopStart() {}
+    public open fun onStart() = Unit
 
-    open fun onAutoStart() {}
+    public open fun onTeleopStart() = Unit
 
-    open fun onDisabledStart() {}
+    public open fun onAutoStart() = Unit
 
-    open fun execute() {}
+    public open fun execute() = Unit
 
-    open fun executeTeleop() {}
+    public open fun executeTeleop() = Unit
 
-    open fun executeAuto() {}
+    public open fun executeAuto() = Unit
 
-    open fun executeDisabled() {}
+    public open fun onTeleopStop() = Unit
 
-    open fun onTeleopEnd() {}
+    public open fun onAutoStop() = Unit
 
-    open fun onAutoEnd() {}
+    public open fun onDisabledStop() = Unit
 
-    open fun onDisabledEnd() {}
+    public open fun onStop() = Unit
+
+    private enum class Mode {
+        AUTO, TELEOP, DISABLED
+    }
 }
