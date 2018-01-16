@@ -13,30 +13,24 @@ public fun Joystick.whileActive(buttonNumber: Int, command: Command) {
     JoystickButton(this, buttonNumber).whileActive(command.mirror)
 }
 
-public fun Joystick.whenActive(buttonNumber: Int, block: () -> Unit) {
+public fun Joystick.whenActive(buttonNumber: Int, block: () -> Boolean) {
     JoystickButton(this, buttonNumber).whenActive(
-        object : edu.wpi.first.wpilibj.command.Command() {
-            override fun execute() {
-                block()
+        object : Command() {
+            override fun execute(): Boolean {
+                return block()
             }
-
-            override fun isFinished(): Boolean {
-                return true
-            }
-        }
+        }.mirror
     )
 }
 
-public fun Joystick.whileActive(buttonNumber: Int, block: () -> Unit) {
+
+public fun Joystick.whileActive(buttonNumber: Int, block: () -> Boolean) {
     JoystickButton(this, buttonNumber).whileActive(
-        object : edu.wpi.first.wpilibj.command.Command() {
-            override fun execute() {
-                block()
+        object : Command() {
+            override fun execute(): Boolean {
+                return block()
             }
 
-            override fun isFinished(): Boolean {
-                return true
-            }
-        }
+        }.mirror
     )
 }
