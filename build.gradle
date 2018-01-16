@@ -18,8 +18,12 @@ allprojects {
         jcenter()
     }
 
+    apply plugin: 'kotlin'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+
     // No-op if it's the root lib
-    if (project.name == "sertain" || project.name == "build") return
+    if (project == project.rootProject) return
 
     // Task to generate sources JAR
     task sourcesJar(type: Jar) {
@@ -31,9 +35,6 @@ allprojects {
     artifacts {
         archives sourcesJar
     }
-
-    // So that we can define publication
-    project.apply plugin: 'maven-publish'
 
     publishing {
         // By passing -Pcustom_local=/some/path and running the
@@ -58,7 +59,7 @@ allprojects {
         publications {
             "${project.name}"(MavenPublication) {
 
-                groupId "org.sertain"
+                groupId "org.sert2521"
                 artifactId project.name
                 version "1.0.0"
 
