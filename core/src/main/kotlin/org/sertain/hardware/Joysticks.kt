@@ -16,21 +16,15 @@ public fun Joystick.whileActive(buttonNumber: Int, command: Command) {
 public fun Joystick.whenActive(buttonNumber: Int, block: () -> Boolean) {
     JoystickButton(this, buttonNumber).whenActive(
         object : Command() {
-            override fun execute(): Boolean {
-                return block()
-            }
+            override fun execute(): Boolean = block()
         }.mirror
     )
 }
 
-
 public fun Joystick.whileActive(buttonNumber: Int, block: () -> Boolean) {
     JoystickButton(this, buttonNumber).whileActive(
         object : Command() {
-            override fun execute(): Boolean {
-                return block()
-            }
-
+            override fun execute(): Boolean = block()
         }.mirror
     )
 }
