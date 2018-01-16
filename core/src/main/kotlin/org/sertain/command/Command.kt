@@ -14,7 +14,7 @@ private typealias WpiLibCommand = edu.wpi.first.wpilibj.command.Command
  * @property unit the unit of time for timeout
  */
 public abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS) {
-    private val command = CommandMirror(this, timeout, unit)
+    internal val mirror = CommandMirror(this, timeout, unit)
 
     /**
      * The subsystem this command requires or depends upon. If used, this command will interrupt and be interrupted by
@@ -22,17 +22,17 @@ public abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLI
      *
      * @param subsystem the subsystem this command requires
      */
-    public fun requires(subsystem: Subsystem) = command.requires(subsystem)
+    public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
 
     /**
      * Start the command.
      */
-    public fun start() = command.start()
+    public fun start() = mirror.start()
 
     /**
      * Cancel the command.
      */
-    public fun cancel() = command.cancel()
+    public fun cancel() = mirror.cancel()
 
     /**
      * Lifecycle method which is executed immediately upon the creation of the command.
@@ -50,10 +50,14 @@ public abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLI
     public open fun onDestroy() = Unit
 }
 
+private interface Requirable {
+    fun requires(subsystem: Subsystem)
+}
+
 /**
  * A mirror of WPILib's Command class.
  */
-private class CommandMirror(
+internal class CommandMirror(
         private val command: Command,
         timeout: Long,
         unit: TimeUnit
