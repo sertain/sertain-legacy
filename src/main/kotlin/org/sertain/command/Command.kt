@@ -1,3 +1,4 @@
+@file:Suppress("unused", "RedundantVisibilityModifier")
 package org.sertain.command
 
 import edu.wpi.first.wpilibj.command.Subsystem
@@ -5,20 +6,20 @@ import java.util.concurrent.TimeUnit
 
 private typealias WpiLibCommand = edu.wpi.first.wpilibj.command.Command
 
-abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS) {
+public abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS) {
     private val command = CommandMirror(this, timeout, unit)
 
-    fun requires(subsystem: Subsystem) = command.requires(subsystem)
+    public fun requires(subsystem: Subsystem) = command.requires(subsystem)
 
-    fun start() = command.start()
+    public fun start() = command.start()
 
-    fun cancel() = command.cancel()
+    public fun cancel() = command.cancel()
 
-    open fun onCreate() = Unit
+    public open fun onCreate() = Unit
 
-    abstract fun execute(): Boolean
+    public abstract fun execute(): Boolean
 
-    open fun onDestroy() = Unit
+    public open fun onDestroy() = Unit
 }
 
 private interface Requirable {
@@ -31,7 +32,7 @@ private class CommandMirror(
         unit: TimeUnit
 ) : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
     @Suppress("RedundantOverride") // Needed for visibility override
-    override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
 
     override fun initialize() = command.onCreate()
 
