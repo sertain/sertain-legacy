@@ -3,6 +3,9 @@ package org.sertain.util
 
 import edu.wpi.first.wpilibj.DriverStation
 
+/**
+ * Gets the current alliance station the FMS reports that the team is located at.
+ */
 public val station: AllianceStation
     get() = AllianceStation(when (DriverStation.getInstance().alliance) {
         DriverStation.Alliance.Blue -> Alliance.BLUE

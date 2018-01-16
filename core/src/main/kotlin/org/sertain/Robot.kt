@@ -7,36 +7,82 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
+/**
+ * An interface which allows for easy access to different lifecycle methods within the robot.
+ */
 public interface RobotLifecycle {
+    /**
+     * Lifecycle method which is executed immediately upon the creation of the robot.
+     */
     public fun onCreate() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the robot becoming enabled.
+     */
     public fun onStart() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the robot entering the teloperated mode.
+     */
     public fun onTeleopStart() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the robot entering the autonomous mode.
+     */
     public fun onAutoStart() = Unit
 
+    /**
+     * Lifecycle method which is executed periodically (every 20ms) on the robot.
+     */
     public fun execute() = Unit
 
+    /**
+    * Lifecycle method which is executed periodically (every 20ms) while the robot is in the teleoperated mode.
+    */
     public fun executeTeleop() = Unit
 
+    /**
+     * Lifecycle method which is executed periodically (every 20ms) while the robot is in the autonomous mode.
+     */
     public fun executeAuto() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the end of the teleoperated mode.
+     */
     public fun onTeleopStop() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the end of the autonomous mode.
+     */
     public fun onAutoStop() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the end of disabled.
+     */
     public fun onDisabledStop() = Unit
 
+    /**
+     * Lifecycle method which is executed immediately upon the robot becoming disabled.
+     */
     public fun onStop() = Unit
 
     companion object {
         private val listeners: MutableList<RobotLifecycle> = CopyOnWriteArrayList()
 
+        /**
+         * Adds a new listener for [lifecycle].
+         *
+         * @param lifecycle the lifecycle to listen for
+         */
         public fun addListener(lifecycle: RobotLifecycle) {
             listeners += lifecycle
         }
 
+        /**
+         * Removes a new listener for [lifecycle].
+         *
+         * @param lifecycle the lifecycle to remove a listener for
+         */
         public fun removeListener(lifecycle: RobotLifecycle) {
             listeners -= lifecycle
         }
