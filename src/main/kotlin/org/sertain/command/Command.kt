@@ -32,7 +32,7 @@ private class CommandMirror(
         unit: TimeUnit
 ) : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
     @Suppress("RedundantOverride") // Needed for visibility override
-    override public fun requires(subsystem: Subsystem) = super.requires(subsystem)
+    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
 
     override fun initialize() = command.onCreate()
 
