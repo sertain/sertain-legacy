@@ -10,5 +10,5 @@ public typealias Victor = WPI_VictorSPX
 public operator fun Talon.plus(other: Talon) = apply { other.follow(this) }
 public operator fun Victor.plus(other: Victor) = apply { other.follow(this) }
 
-public fun Talon.stop() = apply { this.stopMotor() }
-public fun Victor.stop() = apply { this.stopMotor() }
+public fun Talon.stop() = apply { stopMotor() }
+public fun Victor.stop() = apply { stopMotor() }
