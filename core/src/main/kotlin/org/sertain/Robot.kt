@@ -8,61 +8,73 @@ import java.util.concurrent.CopyOnWriteArrayList
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
 /**
- * An interface which allows for easy access to different lifecycle methods within the robot.
+ * Allows for easy access to different lifecycle methods within the robot.
  */
 public interface RobotLifecycle {
     /**
-     * Lifecycle method which is executed immediately upon the creation of the robot.
+     * Indicates robot creation. This method will be called exactly once right after basic robot
+     * initialization has occurred. This is a good time to perform any setup necessary for the
+     * entire robot's lifetime.
      */
     public fun onCreate() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the robot becoming enabled.
+     * Indicates that the robot is being enabled. This method will be called once before the
+     * robot becomes enabled in either the teleoperated or autonomous mode. This would be a good
+     * time to perform actions to prepare the robot for movement.
      */
     public fun onStart() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the robot entering the teloperated mode.
+     * Indicates that the robot is being enabled in the teleoperated mode. This method will be
+     * called exactly once immediately before the robot becomes enabled in teleoperated.
      */
     public fun onTeleopStart() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the robot entering the autonomous mode.
+     * Indicates that the robot is being enabled in the autonomous mode. This method will be
+     * called exactly once before the robot becomes enabled in autonomous.
      */
     public fun onAutoStart() = Unit
 
     /**
-     * Lifecycle method which is executed periodically (every 20ms) on the robot.
+     * Runs periodically (every 20ms) while the robot is turned on. It need not be enabled for this
+     * method to be called.
      */
     public fun execute() = Unit
 
     /**
-    * Lifecycle method which is executed periodically (every 20ms) while the robot is in the teleoperated mode.
-    */
+     * Runs periodically (every 20ms) while the robot is in the teleoperated mode.
+     */
     public fun executeTeleop() = Unit
 
     /**
-     * Lifecycle method which is executed periodically (every 20ms) while the robot is in the autonomous mode.
+     * Runs periodically (every 20ms) while the robot is in the autonomous mode.
      */
     public fun executeAuto() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the end of the teleoperated mode.
+     * Indicates that the teleoperated mode has just terminated. This method will be called once
+     * immediately after the teleoperated mode has terminated.
      */
     public fun onTeleopStop() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the end of the autonomous mode.
+     * Indicates that the autonomous mode has just terminated. This method will be called once
+     * immediately after the autonomous mode has terminated.
      */
     public fun onAutoStop() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the end of disabled.
+     * Indicates that the disabled state has just terminated. This method will be called once
+     * immediately after the disabled state has terminated. This method should be equivalent to
+     * [onStart].
      */
     public fun onDisabledStop() = Unit
 
     /**
-     * Lifecycle method which is executed immediately upon the robot becoming disabled.
+     * Indicates that the robot has become disabled. This method will be called once upon
+     * entering the disabled state.
      */
     public fun onStop() = Unit
 

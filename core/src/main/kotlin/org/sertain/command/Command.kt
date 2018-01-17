@@ -10,42 +10,47 @@ private typealias WpiLibCommand = edu.wpi.first.wpilibj.command.Command
  * A command to run on the robot. The command may require a subsystem in order to ensure that only one command is
  * running for a given subsytem at a time.
  *
- * @property timeout the maximum amount of time this command should be run for
- * @property unit the unit of time for timeout
+ * @param timeout the maximum amount of time this command should be run for
+ * @param unit the unit of time for timeout
  */
 public abstract class Command(timeout: Long = 0, unit: TimeUnit = TimeUnit.MILLISECONDS) {
     internal val mirror = CommandMirror(this, timeout, unit)
 
     /**
-     * The subsystem this command requires or depends upon. If used, this command will interrupt and be interrupted by
-     * other commands requiring the same subsystem.
+     * The subsystem this command requires or depends upon. If used, this command will interrupt
+     * and be interrupted by other commands requiring the same subsystem.
      *
      * @param subsystem the subsystem this command requires
      */
     public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
 
     /**
-     * Start the command.
+     * Starts the command.
      */
     public fun start() = mirror.start()
 
     /**
-     * Cancel the command.
+     * Cancels the command.
      */
     public fun cancel() = mirror.cancel()
 
     /**
-     * Lifecycle method which is executed immediately upon the creation of the command.
+     * Indicates command creation. This method will be called exactly once right after the command
+     * has been created. This is a good time to perform any setup necessary for the entire
+     * command's lifetime.
      */
     public open fun onCreate() = Unit
 
     /**
-     * Lifecycle method which is executed periodically (every 20ms) throughout the command's execution.
+     * Runs periodically (every 20ms) while the command is running.
+     *
+     * @return whether the command is finished
      */
     public abstract fun execute(): Boolean
 
     /**
-     * Lifecycle method which is executed immediately upon the destruction of the command.
+     * Indicates command deletion. This method will be called exactly once right after the command
+     * has been destroyed.
      */
     public open fun onDestroy() = Unit
 }
