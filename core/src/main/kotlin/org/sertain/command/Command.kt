@@ -66,7 +66,8 @@ internal class CommandMirror(
         private val command: Command,
         timeout: Long,
         unit: TimeUnit
-) : WpiLibCommand(unit.toSeconds(timeout).toDouble()) {
+) : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
+    @Suppress("RedundantOverride") // Needed for visibility override
     public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
 
     override fun initialize() = command.onCreate()
