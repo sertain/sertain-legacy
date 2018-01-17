@@ -13,18 +13,16 @@ public fun Joystick.whileActive(buttonNumber: Int, command: Command) {
     JoystickButton(this, buttonNumber).whileActive(command.mirror)
 }
 
-public fun Joystick.whenActive(buttonNumber: Int, block: () -> Boolean) {
-    JoystickButton(this, buttonNumber).whenActive(
-        object : Command() {
-            override fun execute(): Boolean = block()
-        }.mirror
-    )
-}
+public inline fun Joystick.whenActive(
+        buttonNumber: Int,
+        crossinline block: () -> Boolean
+) = whenActive(buttonNumber, object : Command() {
+    override fun execute() = block()
+})
 
-public fun Joystick.whileActive(buttonNumber: Int, block: () -> Boolean) {
-    JoystickButton(this, buttonNumber).whileActive(
-        object : Command() {
-            override fun execute(): Boolean = block()
-        }.mirror
-    )
-}
+public inline fun Joystick.whileActive(
+        buttonNumber: Int,
+        crossinline block: () -> Boolean
+) = whenActive(buttonNumber, object : Command() {
+    override fun execute() = block()
+})
