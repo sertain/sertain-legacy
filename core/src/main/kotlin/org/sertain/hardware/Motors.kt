@@ -1,5 +1,4 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
-
 package org.sertain.hardware
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
@@ -7,7 +6,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
 import org.sertain.RobotLifecycle
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 

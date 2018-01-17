@@ -1,0 +1,155 @@
+<HTML>
+<HEAD>
+<title>BreakWhenStarted - core</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">core</a>&nbsp;/&nbsp;<a href="../index.html">org.sertain.hardware</a>&nbsp;/&nbsp;<a href=".">BreakWhenStarted</a><br/>
+<br/>
+<h1>BreakWhenStarted</h1>
+<code><span class="keyword">class </span><span class="identifier">BreakWhenStarted</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../org.sertain/-robot-lifecycle/index.html"><span class="identifier">RobotLifecycle</span></a></code>
+<p>A lifecycle command which will put all specified talons in break mode when the robot is
+enabled in either teleop or autonomous, and will disable break mode 5 seconds after the robot
+is disabled in order to allow the robot to be pushed around on the field.</p>
+<h3>Parameters</h3>
+
+<p><a name="talons"></a>
+<code>talons</code> - the Talons to enable Auto Break on
+<p><strong>See Also</strong><br/>
+<p><a href="../auto-break.html">autoBreak</a></p>
+</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-init-.html">&lt;init&gt;</a></td>
+<td>
+<code><span class="identifier">BreakWhenStarted</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="org.sertain.hardware.BreakWhenStarted$<init>(kotlin.Array(()))/talons">talons</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span></code>
+<p>A lifecycle command which will put all specified talons in break mode when the robot is
+enabled in either teleop or autonomous, and will disable break mode 5 seconds after the robot
+is disabled in order to allow the robot to be pushed around on the field.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="on-start.html">onStart</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onStart</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the robot is being enabled. This method will be called once before the
+robot becomes enabled in either the teleoperated or autonomous mode. This would be a good
+time to perform actions to prepare the robot for movement.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="on-stop.html">onStop</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onStop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the robot has become disabled. This method will be called once upon
+entering the disabled state.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Inherited Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/execute.html">execute</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">execute</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Runs periodically (every 20ms) while the robot is turned on. It need not be enabled for this
+method to be called.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/execute-auto.html">executeAuto</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">executeAuto</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Runs periodically (every 20ms) while the robot is in the autonomous mode.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/execute-disabled.html">executeDisabled</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">executeDisabled</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Runs periodically (every 20ms) while the robot is in the disabled state.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/execute-teleop.html">executeTeleop</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">executeTeleop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Runs periodically (every 20ms) while the robot is in the teleoperated mode.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/on-auto-start.html">onAutoStart</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onAutoStart</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the robot is being enabled in the autonomous mode. This method will be
+called exactly once before the robot becomes enabled in autonomous.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/on-auto-stop.html">onAutoStop</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onAutoStop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the autonomous mode has just terminated. This method will be called once
+immediately after the autonomous mode has terminated.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/on-create.html">onCreate</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onCreate</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates robot creation. This method will be called exactly once right after basic robot
+initialization has occurred. This is a good time to perform any setup necessary for the
+entire robots lifetime.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/on-disabled-stop.html">onDisabledStop</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onDisabledStop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the disabled state has just terminated. This method will be called once
+immediately after the disabled state has terminated. This method should be equivalent to
+<a href="../../org.sertain/-robot-lifecycle/on-start.html">onStart</a>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/on-teleop-start.html">onTeleopStart</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onTeleopStart</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the robot is being enabled in the teleoperated mode. This method will be
+called exactly once immediately before the robot becomes enabled in teleoperated.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../../org.sertain/-robot-lifecycle/on-teleop-stop.html">onTeleopStop</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onTeleopStop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Indicates that the teleoperated mode has just terminated. This method will be called once
+immediately after the teleoperated mode has terminated.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
