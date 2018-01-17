@@ -25,3 +25,25 @@
     <img src="https://img.shields.io/github/contributors/sertain/sertain.svg?style=flat-square" />
   </a>
 </p>
+
+## Installation
+
+Sertain is hosted on JitPack and only available through the Gradle build system. First, add JitPack
+to your root build.gradle at the end of `repositories`:
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+And then add the dependency:
+
+```groovy
+dependencies {
+        compile 'com.github.sertain:sertain:x.x.x'
+}
+```
