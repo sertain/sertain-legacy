@@ -23,6 +23,6 @@ public inline fun Joystick.whenActive(
 public inline fun Joystick.whileActive(
         buttonNumber: Int,
         crossinline block: () -> Boolean
-) = whenActive(buttonNumber, object : Command() {
+) = whileActive(buttonNumber, object : Command() {
     override fun execute() = block()
 })

@@ -9,7 +9,19 @@
 </h4>
 
 <p align="center">
-    <a href="https://travis-ci.org/sertain/sertain">
-        <img src="https://img.shields.io/travis/sertain/sertain/master.svg?style=flat-square" />
-    </a>
+  <a href="https://travis-ci.org/sertain/sertain">
+    <img src="https://img.shields.io/travis/sertain/sertain/master.svg?style=flat-square" />
+  </a>
+  <a href="https://gitter.im/sertain/development">
+    <img src="https://img.shields.io/gitter/room/sertain/development.js.svg?style=flat-square" />
+  </a>
+  <a href="https://jitpack.io/#sertain/sertain">
+    <img src="https://img.shields.io/jitpack/v/sertain/sertain.svg?style=flat-square" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/github/license/sertain/sertain.svg?style=flat-square" />
+  </a>
+  <a href="https://github.com/sertain/sertain/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/sertain/sertain.svg?style=flat-square" />
+  </a>
 </p>
