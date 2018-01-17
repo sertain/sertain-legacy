@@ -1,14 +1,14 @@
 <HTML>
 <HEAD>
 <title>PathInitializer - core</title>
-<link rel="stylesheet" href="../../../style.css">
+<link rel="stylesheet" href="..\..\..\style.css">
 </HEAD>
 <BODY>
 <a href="../../index.html">core</a>&nbsp;/&nbsp;<a href="../index.html">org.sertain.util</a>&nbsp;/&nbsp;<a href=".">PathInitializer</a><br/>
 <br/>
 <h1>PathInitializer</h1>
 <code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">PathInitializer</span></code>
-<p>An abstract class for initializing a path.</p>
+<p>Initializes a path.</p>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +17,7 @@
 <a href="-init-.html">&lt;init&gt;</a></td>
 <td>
 <code><span class="identifier">PathInitializer</span><span class="symbol">(</span><span class="symbol">)</span></code>
-<p>An abstract class for initializing a path.</p>
+<p>Initializes a path.</p>
 </td>
 </tr>
 </tbody>
@@ -70,7 +70,10 @@
 <td>
 <a href="log-generated-points.html">logGeneratedPoints</a></td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">logGeneratedPoints</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">logGeneratedPoints</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code>
+<p>Logs a list of 50 generated points in the form "x, y" to stdout, separated by newline. This
+format makes it easy to copy and paste the points into a graphing utility such as Desmos.</p>
+</td>
 </tr>
 </tbody>
 </table>

@@ -13,10 +13,20 @@ public val station: AllianceStation
         else -> Alliance.INVALID
     }, DriverStation.getInstance().location)
 
+/**
+ * The team's alliance color.
+ */
 public enum class Alliance {
     RED,
     BLUE,
     INVALID
 }
 
+/**
+ * The team's exact alliance station position, which consists of the alliance color and station
+ * number.
+ *
+ * @property alliance the [Alliance] of this station.
+ * @property station the station number for this color, between 1 and 3.
+ */
 public data class AllianceStation(public val alliance: Alliance, public val station: Int)

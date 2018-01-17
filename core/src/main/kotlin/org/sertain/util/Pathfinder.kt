@@ -75,17 +75,36 @@ public fun Array<Trajectory.Segment>.reduce(n: Int): List<Trajectory.Segment> {
 }
 
 /**
- * An abstract class for initializing a path.
+ * Initializes a path.
  */
 public abstract class PathInitializer {
     protected abstract val trajectory: Trajectory
     protected abstract val followers: Pair<EncoderFollower, EncoderFollower>
 
+    /**
+     * @return the trajectory follower for the left side of the drivetrain.
+     */
     public val left get() = followers.first
+
+    /**
+     * @return the trajectory follower for the right side of the drivetrain.
+     */
     public val right get() = followers.second
+
+    /**
+     * @return whether the trajectory has been completed.
+     */
     public val isFinished get() = left.isFinished
+
+    /**
+     * @return the desired heading at a given point.
+     */
     public val heading get() = left.heading
 
+    /**
+     * Logs a list of 50 generated points in the form "x, y" to stdout, separated by newline. This
+     * format makes it easy to copy and paste the points into a graphing utility such as Desmos.
+     */
     protected fun logGeneratedPoints() {
         println(
             """
