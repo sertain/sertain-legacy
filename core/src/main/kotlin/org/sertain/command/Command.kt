@@ -8,7 +8,7 @@ private typealias WpiLibCommand = edu.wpi.first.wpilibj.command.Command
 
 /**
  * A command to run on the robot. The command may require a subsystem in order to ensure that only one command is
- * running for a given subsytem at a time.
+ * running for a given subsystem at a time.
  *
  * @param timeout the maximum amount of time this command should be run for
  * @param unit the unit of time for timeout

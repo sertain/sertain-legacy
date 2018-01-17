@@ -38,8 +38,8 @@ public fun TrajectoryConfig(
 /**
  * Generates a trajectory from the configuration.
  *
- * @param points an array of [Waypoint]s that the robot should move between
- * @return the freshly generated [Trajectory]
+ * @param points an array of Waypoints that the robot should move between
+ * @return the freshly generated Trajectory
  */
 public fun Trajectory.Config.generate(points: Array<out Waypoint>): Trajectory =
         Pathfinder.generate(points, this)
@@ -47,7 +47,7 @@ public fun Trajectory.Config.generate(points: Array<out Waypoint>): Trajectory =
 /**
  * Creates a tank modifier from the given [source] using [wheelbaseWidth].
  *
- * @param source the source [Trajectory]
+ * @param source the source Trajectory
  * @param wheelbaseWidth the width between left and right wheels
  */
 @Suppress("FunctionName")
@@ -55,18 +55,18 @@ public fun TankModifier(source: Trajectory, wheelbaseWidth: Double): TankModifie
         TankModifier(source).modify(wheelbaseWidth)
 
 /**
- * Creates a pair of [EncoderFollower]s.
+ * Creates a pair of EncoderFollowers.
  *
- * @return a paid of [EncoderFollower]s
+ * @return a pair of EncoderFollowers
  */
 public fun TankModifier.split(): Pair<EncoderFollower, EncoderFollower> =
         EncoderFollower(leftTrajectory) to EncoderFollower(rightTrajectory)
 
 /**
- * Reduces an array of [Trajectory.Segment]s to a more manageable size of [n].
+ * Reduces an array of Trajectory.Segments to a more manageable size of [n].
  *
  * @param n the length to reduce the array to
- * @return a list of [Trajectory.Segment]s
+ * @return a list of Trajectory.Segments
  */
 public fun Array<Trajectory.Segment>.reduce(n: Int): List<Trajectory.Segment> {
     var result = toList()

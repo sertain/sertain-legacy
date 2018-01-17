@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+
 package org.sertain.hardware
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
@@ -6,8 +7,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
 import org.sertain.RobotLifecycle
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 
@@ -46,9 +46,10 @@ public fun Talon.setBreak(enable: Boolean = true) = apply {
 }
 
 /**
- * Sets the Talon to use Auto Break mode. Auto Break mode will enable the Talon's break mode while the robot is enabled
- * in either the teleoperated or autonomous modes, but will disable break mode after 5 seconds of being disabled. This
- * mode is intended to be used on the drivetrain so that the robot may be pushed around the field when it is disabled.
+ * Sets the Talon to use Auto Break mode. Auto Break mode will enable the Talon's break mode while
+ * the robot is enabled in either the teleoperated or autonomous modes, but will disable break
+ * mode after 5 seconds of being disabled. This mode is intended to be used on the drivetrain so
+ * that the robot may be pushed around the field when it is disabled.
  *
  * @return the original Talon
  * @see BreakWhenStarted
@@ -89,9 +90,9 @@ public fun Talon.stop() = apply { stopMotor() }
 public fun Victor.stop() = apply { stopMotor() }
 
 /**
- * A lifecycle command which will put all [talons] in break mode when the robot is enabled in either teleop or
- * autonomous, and will disable break mode 5 seconds after the robot is disabled in order to allow the robot to be
- * pushed around on the field.
+ * A lifecycle command which will put all specified talons in break mode when the robot is
+ * enabled in either teleop or autonomous, and will disable break mode 5 seconds after the robot
+ * is disabled in order to allow the robot to be pushed around on the field.
  *
  * @param talons the Talons to enable Auto Break on
  * @see autoBreak
