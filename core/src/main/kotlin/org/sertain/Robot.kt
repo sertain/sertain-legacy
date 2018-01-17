@@ -44,6 +44,11 @@ public interface RobotLifecycle {
     public fun execute() = Unit
 
     /**
+     * Runs periodically (every 20ms) while the robot is in the disabled state.
+     */
+    public fun executeDisabled() = Unit
+
+    /**
      * Runs periodically (every 20ms) while the robot is in the teleoperated mode.
      */
     public fun executeTeleop() = Unit
@@ -100,48 +105,32 @@ public interface RobotLifecycle {
         }
 
         internal object Distributor : RobotLifecycle {
-            override fun onCreate() {
-                for (listener in listeners) listener.onCreate()
-            }
+            override fun onCreate() = notify { onCreate() }
 
-            override fun onStart() {
-                for (listener in listeners) listener.onStart()
-            }
+            override fun onStart() = notify { onStart() }
 
-            override fun onTeleopStart() {
-                for (listener in listeners) listener.onTeleopStart()
-            }
+            override fun onTeleopStart() = notify { onTeleopStart() }
 
-            override fun onAutoStart() {
-                for (listener in listeners) listener.onAutoStart()
-            }
+            override fun onAutoStart() = notify { onAutoStart() }
 
-            override fun execute() {
-                for (listener in listeners) listener.execute()
-            }
+            override fun execute() = notify { execute() }
 
-            override fun executeTeleop() {
-                for (listener in listeners) listener.executeTeleop()
-            }
+            override fun executeDisabled() = notify { executeDisabled() }
 
-            override fun executeAuto() {
-                for (listener in listeners) listener.executeAuto()
-            }
+            override fun executeTeleop() = notify { executeTeleop() }
 
-            override fun onTeleopStop() {
-                for (listener in listeners) listener.onTeleopStop()
-            }
+            override fun executeAuto() = notify { executeAuto() }
 
-            override fun onAutoStop() {
-                for (listener in listeners) listener.onAutoStop()
-            }
+            override fun onTeleopStop() = notify { onTeleopStop() }
 
-            override fun onDisabledStop() {
-                for (listener in listeners) listener.onDisabledStop()
-            }
+            override fun onAutoStop() = notify { onAutoStop() }
 
-            override fun onStop() {
-                for (listener in listeners) listener.onStop()
+            override fun onDisabledStop() = notify { onDisabledStop() }
+
+            override fun onStop() = notify { onStop() }
+
+            private inline fun notify(block: RobotLifecycle.() -> Unit) {
+                for (listener in listeners) listener.block()
             }
         }
     }
@@ -167,9 +156,16 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
 
     override fun robotInit() = LifecycleDistributor.onCreate()
 
-    override fun teleopInit() {
-        LifecycleDistributor.onStart()
-        LifecycleDistributor.onTeleopStart()
+    override fun robotPeriodic() {
+        Scheduler.getInstance().run()
+        LifecycleDistributor.execute()
+    }
+
+    override fun disabledInit() = LifecycleDistributor.onStop()
+
+    override fun disabledPeriodic() {
+        mode = Mode.DISABLED
+        LifecycleDistributor.executeDisabled()
     }
 
     override fun autonomousInit() {
@@ -177,25 +173,19 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
         LifecycleDistributor.onAutoStart()
     }
 
-    override fun disabledInit() = LifecycleDistributor.onStop()
-
-    override fun robotPeriodic() {
-        Scheduler.getInstance().run()
-        LifecycleDistributor.execute()
-    }
-
-    override fun teleopPeriodic() {
-        mode = Mode.TELEOP
-        LifecycleDistributor.executeTeleop()
-    }
-
     override fun autonomousPeriodic() {
         mode = Mode.AUTO
         LifecycleDistributor.executeAuto()
     }
 
-    override fun disabledPeriodic() {
-        mode = Mode.DISABLED
+    override fun teleopInit() {
+        LifecycleDistributor.onStart()
+        LifecycleDistributor.onTeleopStart()
+    }
+
+    override fun teleopPeriodic() {
+        mode = Mode.TELEOP
+        LifecycleDistributor.executeTeleop()
     }
 
     private enum class Mode {
