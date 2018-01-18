@@ -1,5 +1,7 @@
 <p align="center">
-  <img alt="Sertain" src="https://i.imgur.com/zd0squD.png" />
+  <a href="#">
+    <img alt="Sertain" src="https://i.imgur.com/zd0squD.png" />
+  </a>
 </p>
 
 <h4 align="center">
