@@ -1,7 +1,8 @@
 buildscript {
-    ext.kotlinVersion = '1.2.10'
+    ext.kotlinVersion = '1.2.20'
 
     repositories {
+        google()
         jcenter()
     }
 
@@ -12,10 +13,11 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
+        jcenter()
         maven { url 'http://first.wpi.edu/FRC/roborio/maven/release' }
         maven { url 'https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2' }
         maven { url 'http://dev.imjac.in/maven/' }
-        jcenter()
     }
 
     apply plugin: 'kotlin'

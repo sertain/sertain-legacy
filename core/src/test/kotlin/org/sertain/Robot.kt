@@ -4,20 +4,14 @@ import org.fest.assertions.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.sertain.RobotLifecycle.Companion.listeners
 
 class RobotTest {
-    private val testLifecycle = TestLifecycleClass()
-    private var listeners = mutableListOf<RobotLifecycle>()
+    private val testLifecycle = object : RobotLifecycle {}
 
     @Before
     fun beforeEach() {
         RobotLifecycle.addListener(testLifecycle)
-
-        @Suppress("UNCHECKED_CAST")
-        listeners = RobotLifecycle.Companion::class.java.getDeclaredField("listeners").let {
-            it.isAccessible = true
-            it.get(null)
-        } as MutableList<RobotLifecycle>
     }
 
     @After
@@ -36,6 +30,4 @@ class RobotTest {
 
         assertThat(listeners).isEmpty()
     }
-
-    class TestLifecycleClass : RobotLifecycle
 }
