@@ -16,5 +16,5 @@ if [ $TRAVIS_PULL_REQUEST = "false" ] && [ $TRAVIS_BRANCH = "master" ]; then
   git commit -a -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
   git push -u origin master &> /dev/null
 else
-  ./gradlew clean assembleDebug check
+  ./gradlew clean assemble check
 fi
