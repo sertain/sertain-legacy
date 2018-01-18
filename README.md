@@ -1,5 +1,3 @@
-<h1 align="center">Sertain Framework</h1>
-
 <p align="center">
   <img alt="Sertain" src="https://i.imgur.com/zd0squD.png" />
 </p>
