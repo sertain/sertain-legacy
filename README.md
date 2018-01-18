@@ -1,7 +1,7 @@
 <h1 align="center">Sertain Framework</h1>
 
 <p align="center">
-  <img alt="Sertain" src="https://i.imgur.com/almzEhB.png" width="250" />
+  <img alt="Sertain" src="https://i.imgur.com/zd0squD.png" />
 </p>
 
 <h4 align="center">
