@@ -9,7 +9,7 @@ Feel free to take on any issue or feature request, and open a pull request for i
 ## Gitter
 
 Please don't hesitate to join our [Gitter](https://gitter.im/Sertain)! Technical points of 
-discussion, general questions and suggestions or anything at all, really - we would love to chat 
+discussion, general questions and suggestions, or anything at all, really—we would love to chat 
 about it.
 
 ## Issues
@@ -21,15 +21,15 @@ Sertain, create a new issue following our issue template and we'll look into it 
 can.
 
 If you have a request for a new feature in Sertain (or just see some code you think could be 
-improved), feel free to open up an issue as well!
+improved), feel free to open up an issue as well.
 
 If you want to open a PR that fixes a bug or adds a feature, then we can't thank you enough! It is
 definitely appreciated if an issue has been created before-hand so it can be discussed first.
 
 ### Working on Issues
 
-Please feel free to take on any issue that's currently open. We want you to take on am issue you
-enjoy working on even if it happens to be a low priority.
+Please feel free to take on any issues that are currently open. We want you to take on an issue you
+enjoy working on, even if it happens to be a low priority.
 
 ## Setup
 
@@ -38,13 +38,7 @@ enjoy working on even if it happens to be a low priority.
 1. Make a branch for your feature or bug fix
 1. Add new tests if applicable
 1. Make sure the build succeeds with `./gradlew build`
-1. Open up a fresh new PR!
+1. Open up a fresh PR!
 
 If you happen to experience a problem at any point, please don't hesitate to file an issue or send 
-me a message on Gitter!
-
-## Credits
-
-### Contributors
-
-Checkout all the awesome people who have made Sertain possible [here](./CONTRIBUTORS.md).
+us a message on Gitter!
