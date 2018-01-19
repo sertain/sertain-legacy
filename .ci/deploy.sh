@@ -2,7 +2,7 @@
 set -eo pipefail # Exit with nonzero exit code if anything fails
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "travis" ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "master" ]; then
     echo "Skipping deploy."
     exit 0
 fi
@@ -16,7 +16,7 @@ git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/ja
 git config --global user.name "Travis CI"
 git config --global user.email "social@sert2521.org"
 
-cp sertain/core/build/javadocs/** -r javadocs
+cp -r sertain/core/build/javadocs/** javadocs
 cd javadocs
 
 # If there are no real changes to the compiled out
