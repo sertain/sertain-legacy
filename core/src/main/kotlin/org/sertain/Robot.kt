@@ -81,12 +81,12 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
     private var mode = Mode.DISABLED
         set(value) {
             if (value != field) {
-                field = value
                 when (field) {
                     Mode.TELEOP -> LifecycleDistributor.onTeleopStop()
                     Mode.AUTO -> LifecycleDistributor.onAutoStop()
                     Mode.DISABLED -> LifecycleDistributor.onDisabledStop()
                 }
+                field = value
             }
         }
 
@@ -102,32 +102,28 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
         LifecycleDistributor.execute()
     }
 
-    override fun disabledInit() = LifecycleDistributor.onStop()
-
-    override fun disabledPeriodic() {
+    override fun disabledInit() {
         mode = Mode.DISABLED
-        LifecycleDistributor.executeDisabled()
+        LifecycleDistributor.onStop()
     }
 
+    override fun disabledPeriodic() = LifecycleDistributor.executeDisabled()
+
     override fun autonomousInit() {
+        mode = Mode.AUTO
         LifecycleDistributor.onStart()
         LifecycleDistributor.onAutoStart()
     }
 
-    override fun autonomousPeriodic() {
-        mode = Mode.AUTO
-        LifecycleDistributor.executeAuto()
-    }
+    override fun autonomousPeriodic() = LifecycleDistributor.executeAuto()
 
     override fun teleopInit() {
+        mode = Mode.TELEOP
         LifecycleDistributor.onStart()
         LifecycleDistributor.onTeleopStart()
     }
 
-    override fun teleopPeriodic() {
-        mode = Mode.TELEOP
-        LifecycleDistributor.executeTeleop()
-    }
+    override fun teleopPeriodic() = LifecycleDistributor.executeTeleop()
 
     private enum class Mode {
         AUTO, TELEOP, DISABLED
