@@ -8,4 +8,8 @@ private typealias WpiLibSubsystem = edu.wpi.first.wpilibj.command.Subsystem
 /**
  * @see edu.wpi.first.wpilibj.command.Subsystem
  */
-public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle
+public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle {
+    init {
+        RobotLifecycle.addListener(this)
+    }
+}
