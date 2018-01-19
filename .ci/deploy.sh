@@ -27,5 +27,5 @@ if git diff --quiet; then
 fi
 
 git add .
-git commit -a -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
+git commit -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
 git push -u origin master &> /dev/null
