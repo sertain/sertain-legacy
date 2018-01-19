@@ -1,6 +1,7 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
 package org.sertain
 
+import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
 import java.util.concurrent.CopyOnWriteArrayList
@@ -84,7 +85,8 @@ public interface RobotLifecycle {
     public fun onStop() = Unit
 
     companion object {
-        private val listeners: MutableList<RobotLifecycle> = CopyOnWriteArrayList()
+        @VisibleForTesting
+        internal val listeners: MutableList<RobotLifecycle> = CopyOnWriteArrayList()
 
         /**
          * Adds a new listener for [lifecycle].
