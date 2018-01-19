@@ -4,7 +4,7 @@ package org.sertain.hardware
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
+import edu.wpi.first.wpilibj.Victor
 import org.sertain.RobotLifecycle
 import java.util.Timer
 import java.util.TimerTask
@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
-public typealias Victor = WPI_VictorSPX
 
 /**
  * Gets the encoder position of the currently selected sensor.
@@ -26,14 +25,6 @@ public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
  * @return the original Talon
  */
 public operator fun Talon.plus(other: Talon) = apply { other.follow(this) }
-
-/**
- * Joins two Victors together by having the second follow the first.
- *
- * @param other the Victor which should follow this one
- * @return the original Victor
- */
-public operator fun Victor.plus(other: Victor) = apply { other.follow(this) }
 
 /**
  * Sets the Talon's current mode between either Brake or Coast.
@@ -81,13 +72,6 @@ public fun Talon.inverted(inverted: Boolean = true) = apply { this.inverted = in
  * @return the original Talon
  */
 public fun Talon.stop() = apply { stopMotor() }
-
-/**
- * Stops the Victor until `set()` is called again.
- *
- * @return the original Talon
- */
-public fun Victor.stop() = apply { stopMotor() }
 
 /**
  * A lifecycle command which will put all specified talons in break mode when the robot is
