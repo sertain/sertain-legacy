@@ -6,30 +6,25 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton
 import org.sertain.command.Command
 
 /**
- * Executes the given command once when a joystick's [button] is pressed.
- *
  * @param button the number of the button to listen for
  * @param command the command to execute
+ * @see JoystickButton.whenActive
  */
 public fun Joystick.whenActive(button: Int, command: Command) {
     JoystickButton(this, button).whenActive(command.mirror)
 }
 
 /**
- * Constantly starts the given command while the joystick's [button] is held.
- *
  * @param button the number of the button to listen for
  * @param command the command to execute
+ * @see JoystickButton.whileActive
  */
 public fun Joystick.whileActive(button: Int, command: Command) {
     JoystickButton(this, button).whileActive(command.mirror)
 }
 
 /**
- * Executes the given lambda function once when a joystick's [button] is pressed.
- *
- * @param button the number of the button to listen for
- * @param block the lambda function to execute
+ * @see [whenActive]
  */
 public inline fun Joystick.whenActive(
         button: Int,
@@ -39,10 +34,7 @@ public inline fun Joystick.whenActive(
 })
 
 /**
- * Constantly starts the given lambda function while the joystick's [button] is held.
- *
- * @param button the number of the button to listen for
- * @param block the lambda function to execute
+ * @see [whileActive]
  */
 public inline fun Joystick.whileActive(
         button: Int,
