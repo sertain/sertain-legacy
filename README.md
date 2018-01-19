@@ -1,7 +1,7 @@
-<h1 align="center">Sertain Framework</h1>
-
 <p align="center">
-  <img alt="Sertain" src="https://i.imgur.com/almzEhB.png" width="250" />
+  <a href="#">
+    <img alt="Sertain" src="https://i.imgur.com/zd0squD.png" />
+  </a>
 </p>
 
 <h4 align="center">
@@ -44,6 +44,6 @@ And then add the dependency:
 
 ```groovy
 dependencies {
-        compile 'com.github.sertain:sertain:x.x.x'
+    compile 'com.github.sertain:sertain:x.x.x'
 }
 ```
