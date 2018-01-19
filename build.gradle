@@ -8,6 +8,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.13'
     }
 }
 
@@ -23,6 +24,7 @@ allprojects {
     apply plugin: 'kotlin'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: 'org.jetbrains.dokka'
 
     // No-op if it's the root lib
     if (project == project.rootProject) return
@@ -36,6 +38,11 @@ allprojects {
     // Use tasks above to define artifacts
     artifacts {
         archives sourcesJar
+    }
+
+    dokka {
+        outputFormat = 'javadoc'
+        outputDirectory = "$buildDir/javadocs"
     }
 
     publishing {
