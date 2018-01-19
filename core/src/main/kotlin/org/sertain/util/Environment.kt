@@ -4,9 +4,10 @@ package org.sertain.util
 import edu.wpi.first.wpilibj.DriverStation
 
 /**
- * Gets the current alliance station the FMS reports that the team is located at.
+ * Gets the current alliance station from the FMS.
+ * @see AllianceStation
  */
-public val station: AllianceStation
+public val station: AllianceStation?
     get() = AllianceStation(when (DriverStation.getInstance().alliance) {
         DriverStation.Alliance.Blue -> Alliance.BLUE
         DriverStation.Alliance.Red -> Alliance.RED
@@ -23,7 +24,7 @@ public enum class Alliance {
 }
 
 /**
- * The team's exact alliance station position, which consists of the alliance color and station
+ * The team's exact alliance station position which consists of the alliance color and station
  * number.
  *
  * @property alliance the [Alliance] of this station.

@@ -16,6 +16,7 @@ import jaci.pathfinder.modifiers.TankModifier
  * @param fit the method to fit the path to
  * @param samples the number of samples to calculate
  * @param ticks the speed at which the robot will take in the generated points
+ * @see Trajectory.Config
  */
 @Suppress("FunctionName")
 @JvmOverloads
@@ -36,10 +37,7 @@ public fun TrajectoryConfig(
 )
 
 /**
- * Generates a trajectory from the configuration.
- *
- * @param points an array of Waypoints that the robot should move between
- * @return the freshly generated Trajectory
+ * @see Pathfinder.generate
  */
 public fun Trajectory.Config.generate(points: Array<out Waypoint>): Trajectory =
         Pathfinder.generate(points, this)
@@ -49,15 +47,16 @@ public fun Trajectory.Config.generate(points: Array<out Waypoint>): Trajectory =
  *
  * @param source the source Trajectory
  * @param wheelbaseWidth the width between left and right wheels
+ * @see TankModifier
+ * @see TankModifier.modify
  */
 @Suppress("FunctionName")
 public fun TankModifier(source: Trajectory, wheelbaseWidth: Double): TankModifier =
         TankModifier(source).modify(wheelbaseWidth)
 
 /**
- * Creates a pair of EncoderFollowers.
- *
  * @return a pair of EncoderFollowers
+ * @see EncoderFollower
  */
 public fun TankModifier.split(): Pair<EncoderFollower, EncoderFollower> =
         EncoderFollower(leftTrajectory) to EncoderFollower(rightTrajectory)
@@ -66,7 +65,7 @@ public fun TankModifier.split(): Pair<EncoderFollower, EncoderFollower> =
  * Reduces an array of Trajectory.Segments to a more manageable size of [n].
  *
  * @param n the length to reduce the array to
- * @return a list of Trajectory.Segments
+ * @return a list of [Segments][Trajectory.Segment]
  */
 public fun Array<Trajectory.Segment>.reduce(n: Int): List<Trajectory.Segment> {
     var result = toList()
@@ -75,7 +74,8 @@ public fun Array<Trajectory.Segment>.reduce(n: Int): List<Trajectory.Segment> {
 }
 
 /**
- * Initializes a path.
+ * Base class that simplifies keeping track of the various path objects.
+ * @see Pathfinder
  */
 public abstract class PathInitializer {
     protected abstract val trajectory: Trajectory
@@ -83,27 +83,30 @@ public abstract class PathInitializer {
 
     /**
      * @return the trajectory follower for the left side of the drivetrain.
+     * @see EncoderFollower
      */
     public val left get() = followers.first
 
     /**
      * @return the trajectory follower for the right side of the drivetrain.
+     * @see EncoderFollower
      */
     public val right get() = followers.second
 
     /**
-     * @return whether the trajectory has been completed.
+     * @see EncoderFollower.isFinished
      */
     public val isFinished get() = left.isFinished
 
     /**
-     * @return the desired heading at a given point.
+     * @see EncoderFollower.getHeading
      */
     public val heading get() = left.heading
 
     /**
-     * Logs a list of 50 generated points in the form "x, y" to stdout, separated by newline. This
-     * format makes it easy to copy and paste the points into a graphing utility such as Desmos.
+     * Logs a list of up to 50 generated points in the form "x, y" to stdout, separated by newline.
+     * This format makes it easy to copy and paste the points into a graphing utility such as
+     * Desmos.
      */
     protected fun logGeneratedPoints() {
         println(

@@ -20,7 +20,7 @@ public typealias Victor = WPI_VictorSPX
 public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
 
 /**
- * Joins two Talons together by having the second follow the first.
+ * Joins two [Talons][Talon] together by having the second follow the first.
  *
  * @param other the Talon which should follow this one
  * @return the original Talon
