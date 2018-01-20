@@ -7,7 +7,7 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "master" ]; then
     exit 0
 fi
 
-./gradlew clean build dokka
+./gradlew dokka
 
 # Upload docs
 cd ..
