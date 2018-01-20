@@ -4,7 +4,6 @@ package org.sertain
 import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
-import java.util.concurrent.CopyOnWriteArrayList
 
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
@@ -88,7 +87,7 @@ public interface RobotLifecycle {
 
     companion object {
         @VisibleForTesting
-        internal val listeners: MutableList<RobotLifecycle> = CopyOnWriteArrayList()
+        internal val listeners = mutableSetOf<RobotLifecycle>()
 
         /**
          * Adds a listener for [RobotLifecycle] events.
@@ -96,7 +95,7 @@ public interface RobotLifecycle {
          * @param lifecycle the lifecycle object to receive callbacks
          */
         public fun addListener(lifecycle: RobotLifecycle) {
-            listeners += lifecycle
+            synchronized(listeners) { listeners += lifecycle }
         }
 
         /**
@@ -105,7 +104,7 @@ public interface RobotLifecycle {
          * @param lifecycle the object to stop receiving callbacks
          */
         public fun removeListener(lifecycle: RobotLifecycle) {
-            listeners -= lifecycle
+            synchronized(listeners) { listeners -= lifecycle }
         }
 
         internal object Distributor : RobotLifecycle {
@@ -134,7 +133,7 @@ public interface RobotLifecycle {
             override fun onStop() = notify { onStop() }
 
             private inline fun notify(block: RobotLifecycle.() -> Unit) {
-                for (listener in listeners) listener.block()
+                synchronized(listeners) { for (listener in listeners) listener.block() }
             }
         }
     }
