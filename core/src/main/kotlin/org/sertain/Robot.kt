@@ -4,7 +4,6 @@ package org.sertain
 import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
-import java.util.concurrent.CopyOnWriteArrayList
 
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
@@ -30,16 +29,16 @@ public interface RobotLifecycle {
     public fun onStart() = Unit
 
     /**
-     * Indicates that the robot is being enabled in the teleoperated mode. This method will be
-     * called before the robot becomes enabled in teleoperated mode.
-     */
-    public fun onTeleopStart() = Unit
-
-    /**
      * Indicates that the robot is being enabled in the autonomous mode. This method will be called
      * before the robot becomes enabled in autonomous mode.
      */
     public fun onAutoStart() = Unit
+
+    /**
+     * Indicates that the robot is being enabled in the teleoperated mode. This method will be
+     * called before the robot becomes enabled in teleoperated mode.
+     */
+    public fun onTeleopStart() = Unit
 
     /**
      * Runs periodically (default = every 20ms) while the robot is turned on. It need not be enabled
@@ -87,8 +86,9 @@ public interface RobotLifecycle {
     public fun onStop() = Unit
 
     companion object {
+        internal var state: RobotState = RobotState.Created()
         @VisibleForTesting
-        internal val listeners: MutableList<RobotLifecycle> = CopyOnWriteArrayList()
+        internal val listeners = mutableListOf<RobotLifecycle>()
 
         /**
          * Adds a listener for [RobotLifecycle] events.
@@ -96,7 +96,14 @@ public interface RobotLifecycle {
          * @param lifecycle the lifecycle object to receive callbacks
          */
         public fun addListener(lifecycle: RobotLifecycle) {
-            listeners += lifecycle
+            synchronized(listeners) {
+                var initialState: RobotState = RobotState.Created()
+                while (initialState < state) {
+                    initialState++
+                }
+
+                listeners += lifecycle
+            }
         }
 
         /**
@@ -105,39 +112,68 @@ public interface RobotLifecycle {
          * @param lifecycle the object to stop receiving callbacks
          */
         public fun removeListener(lifecycle: RobotLifecycle) {
-            listeners -= lifecycle
+            synchronized(listeners) { listeners -= lifecycle }
+        }
+
+        private operator fun RobotState.inc() = when (this) {
+            is RobotState.Created -> RobotState.Started()
+            is RobotState.Started -> state
+            is
         }
 
         internal object Distributor : RobotLifecycle {
-            override fun onCreate() = notify { onCreate() }
+            override fun onCreate() = notify(RobotState.Created()) { onCreate() }
 
-            override fun onStart() = notify { onStart() }
+            override fun onStart() = notify(RobotState.Started()) { onStart() }
 
-            override fun onTeleopStart() = notify { onTeleopStart() }
+            override fun onTeleopStart() = notify(RobotState.TeleopStarted()) { onTeleopStart() }
 
-            override fun onAutoStart() = notify { onAutoStart() }
+            override fun onAutoStart() = notify(RobotState.AutoStarted()) { onAutoStart() }
 
-            override fun execute() = notify { execute() }
+            override fun execute() = notify(RobotState.Executing()) { execute() }
 
-            override fun executeDisabled() = notify { executeDisabled() }
+            override fun executeDisabled() =
+                    notify(RobotState.ExecutingDisabled()) { executeDisabled() }
 
-            override fun executeTeleop() = notify { executeTeleop() }
+            override fun executeTeleop() = notify(RobotState.ExecutingTeleop()) { executeTeleop() }
 
-            override fun executeAuto() = notify { executeAuto() }
+            override fun executeAuto() = notify(RobotState.ExecutingAuto()) { executeAuto() }
 
-            override fun onTeleopStop() = notify { onTeleopStop() }
+            override fun onTeleopStop() = notify(RobotState.TeleopStopped()) { onTeleopStop() }
 
-            override fun onAutoStop() = notify { onAutoStop() }
+            override fun onAutoStop() = notify(RobotState.AutoStopped()) { onAutoStop() }
 
-            override fun onDisabledStop() = notify { onDisabledStop() }
+            override fun onDisabledStop() =
+                    notify(RobotState.DisabledStopped()) { onDisabledStop() }
 
-            override fun onStop() = notify { onStop() }
+            override fun onStop() = notify(RobotState.Stopped()) { onStop() }
 
-            private inline fun notify(block: RobotLifecycle.() -> Unit) {
+            private inline fun notify(state: RobotState, block: RobotLifecycle.() -> Unit) {
+                synchronized(listeners) { RobotLifecycle.state = state }
                 for (listener in listeners) listener.block()
             }
         }
     }
+}
+
+sealed class RobotState(private val sort: Int) : Comparable<RobotState> {
+    override fun compareTo(other: RobotState) = sort - other.sort
+
+    class Created : RobotState(0)
+
+    open class Stopped : RobotState(1)
+    class TeleopStopped : Stopped()
+    class AutoStopped : Stopped()
+    class DisabledStopped : Stopped()
+
+    open class Started : RobotState(2)
+    class TeleopStarted : Started()
+    class AutoStarted : Started()
+
+    open class Executing : RobotState(3)
+    class ExecutingDisabled : Executing()
+    class ExecutingTeleop : Executing()
+    class ExecutingAuto : Executing()
 }
 
 /**
