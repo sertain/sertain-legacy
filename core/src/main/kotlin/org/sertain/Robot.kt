@@ -29,16 +29,16 @@ public interface RobotLifecycle {
     public fun onStart() = Unit
 
     /**
-     * Indicates that the robot is being enabled in the teleoperated mode. This method will be
-     * called before the robot becomes enabled in teleoperated mode.
-     */
-    public fun onTeleopStart() = Unit
-
-    /**
      * Indicates that the robot is being enabled in the autonomous mode. This method will be called
      * before the robot becomes enabled in autonomous mode.
      */
     public fun onAutoStart() = Unit
+
+    /**
+     * Indicates that the robot is being enabled in the teleoperated mode. This method will be
+     * called before the robot becomes enabled in teleoperated mode.
+     */
+    public fun onTeleopStart() = Unit
 
     /**
      * Runs periodically (default = every 20ms) while the robot is turned on. It need not be enabled
@@ -74,18 +74,13 @@ public interface RobotLifecycle {
     public fun onAutoStop() = Unit
 
     /**
-     * Indicates that the disabled state has just terminated. This method will be called after the
-     * disabled state has terminated. This method should be equivalent to [onStart].
-     */
-    public fun onDisabledStop() = Unit
-
-    /**
      * Indicates that the robot has become disabled. This method will be called upon entering the
      * disabled state.
      */
     public fun onStop() = Unit
 
     companion object {
+        internal var state = Robot.State.DISABLED
         @VisibleForTesting
         internal val listeners = mutableSetOf<RobotLifecycle>()
 
@@ -95,6 +90,13 @@ public interface RobotLifecycle {
          * @param lifecycle the lifecycle object to receive callbacks
          */
         public fun addListener(lifecycle: RobotLifecycle) {
+            lifecycle.onCreate()
+            when (state) {
+                Robot.State.TELEOP -> lifecycle.onTeleopStart()
+                Robot.State.AUTO -> lifecycle.onAutoStart()
+                Robot.State.DISABLED -> Unit
+            }
+
             synchronized(listeners) { listeners += lifecycle }
         }
 
@@ -112,9 +114,9 @@ public interface RobotLifecycle {
 
             override fun onStart() = notify { onStart() }
 
-            override fun onTeleopStart() = notify { onTeleopStart() }
+            override fun onTeleopStart() = notify(Robot.State.TELEOP) { onTeleopStart() }
 
-            override fun onAutoStart() = notify { onAutoStart() }
+            override fun onAutoStart() = notify(Robot.State.AUTO) { onAutoStart() }
 
             override fun execute() = notify { execute() }
 
@@ -128,11 +130,13 @@ public interface RobotLifecycle {
 
             override fun onAutoStop() = notify { onAutoStop() }
 
-            override fun onDisabledStop() = notify { onDisabledStop() }
+            override fun onStop() = notify(Robot.State.DISABLED) { onStop() }
 
-            override fun onStop() = notify { onStop() }
-
-            private inline fun notify(block: RobotLifecycle.() -> Unit) {
+            private inline fun notify(
+                    state: Robot.State? = null,
+                    block: RobotLifecycle.() -> Unit
+            ) {
+                state?.let { RobotLifecycle.state = it }
                 synchronized(listeners) { for (listener in listeners) listener.block() }
             }
         }
@@ -143,13 +147,13 @@ public interface RobotLifecycle {
  * Base robot class which must be used for [RobotLifecycle] callbacks to work.
  */
 public abstract class Robot : IterativeRobot(), RobotLifecycle {
-    private var mode = Mode.DISABLED
+    private var mode = State.DISABLED
         set(value) {
             if (value != field) {
                 when (field) {
-                    Mode.TELEOP -> LifecycleDistributor.onTeleopStop()
-                    Mode.AUTO -> LifecycleDistributor.onAutoStop()
-                    Mode.DISABLED -> LifecycleDistributor.onDisabledStop()
+                    State.TELEOP -> LifecycleDistributor.onTeleopStop()
+                    State.AUTO -> LifecycleDistributor.onAutoStop()
+                    State.DISABLED -> Unit
                 }
                 field = value
             }
@@ -168,14 +172,14 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
     }
 
     override fun disabledInit() {
-        mode = Mode.DISABLED
+        mode = State.DISABLED
         LifecycleDistributor.onStop()
     }
 
     override fun disabledPeriodic() = LifecycleDistributor.executeDisabled()
 
     override fun autonomousInit() {
-        mode = Mode.AUTO
+        mode = State.AUTO
         LifecycleDistributor.onStart()
         LifecycleDistributor.onAutoStart()
     }
@@ -183,14 +187,14 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
     override fun autonomousPeriodic() = LifecycleDistributor.executeAuto()
 
     override fun teleopInit() {
-        mode = Mode.TELEOP
+        mode = State.TELEOP
         LifecycleDistributor.onStart()
         LifecycleDistributor.onTeleopStart()
     }
 
     override fun teleopPeriodic() = LifecycleDistributor.executeTeleop()
 
-    private enum class Mode {
-        AUTO, TELEOP, DISABLED
+    internal enum class State {
+        DISABLED, AUTO, TELEOP
     }
 }

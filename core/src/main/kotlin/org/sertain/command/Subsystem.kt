@@ -10,8 +10,12 @@ private typealias WpiLibSubsystem = edu.wpi.first.wpilibj.command.Subsystem
  * @see edu.wpi.first.wpilibj.command.Subsystem
  */
 public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle {
+    abstract val defaultCommand: Command
+
     override fun initSendable(builder: SendableBuilder?) {
         super.initSendable(builder)
         RobotLifecycle.addListener(this)
     }
+
+    override fun initDefaultCommand() = setDefaultCommand(defaultCommand.mirror)
 }
