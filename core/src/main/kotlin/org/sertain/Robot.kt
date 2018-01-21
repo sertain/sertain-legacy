@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+
 package org.sertain
 
 import android.support.annotation.VisibleForTesting
@@ -88,7 +89,7 @@ public interface RobotLifecycle {
     companion object {
         internal var state: RobotState = RobotState.Created()
         @VisibleForTesting
-        internal val listeners = mutableListOf<RobotLifecycle>()
+        internal val listeners = mutableSetOf<RobotLifecycle>()
 
         /**
          * Adds a listener for [RobotLifecycle] events.
@@ -149,8 +150,10 @@ public interface RobotLifecycle {
             override fun onStop() = notify(RobotState.Stopped()) { onStop() }
 
             private inline fun notify(state: RobotState, block: RobotLifecycle.() -> Unit) {
-                synchronized(listeners) { RobotLifecycle.state = state }
-                for (listener in listeners) listener.block()
+                synchronized(listeners) {
+                    RobotLifecycle.state = state
+                    for (listener in listeners) listener.block()
+                }
             }
         }
     }

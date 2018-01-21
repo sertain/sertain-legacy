@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
 import org.sertain.RobotLifecycle
+import org.sertain.hardware.BreakWhenStarted.minusAssign
+import org.sertain.hardware.BreakWhenStarted.plusAssign
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.TimeUnit
@@ -41,7 +43,15 @@ public fun Talon.setBreak(enable: Boolean = true) = apply {
  * @return the original Talon
  * @see BreakWhenStarted
  */
-public fun Talon.autoBreak() = apply { BreakWhenStarted(this) }
+public fun Talon.autoBreak() = apply { BreakWhenStarted += this }
+
+/**
+ * Sets the Talon to break only when you explicitly use [setBreak].
+ *
+ * @return the original Talon
+ * @see BreakWhenStarted
+ */
+public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
 
 /**
  * Resets a given sensor to 0.
@@ -74,14 +84,22 @@ public fun Talon.stop() = apply { stopMotor() }
  * mode, and will disable break mode 5 seconds after the robot is disabled in order to allow the
  * robot to be pushed around on the field.
  *
- * @param talons the Talons to enable Auto Break on
  * @see autoBreak
  */
-public class BreakWhenStarted(private vararg val talons: Talon) : RobotLifecycle {
+private object BreakWhenStarted : RobotLifecycle {
+    private val talons = mutableSetOf<Talon>()
     private var updateTask: TimerTask? = null
 
     init {
         RobotLifecycle.addListener(this)
+    }
+
+    operator fun BreakWhenStarted.plusAssign(talon: Talon) {
+        synchronized(talons) { talons += talon }
+    }
+
+    operator fun BreakWhenStarted.minusAssign(talon: Talon) {
+        synchronized(talons) { talons -= talon }
     }
 
     override fun onStart() {
@@ -94,6 +112,6 @@ public class BreakWhenStarted(private vararg val talons: Talon) : RobotLifecycle
     }
 
     private fun set(`break`: Boolean) {
-        for (talon in talons) talon.setBreak(`break`)
+        synchronized(talons) { for (talon in talons) talon.setBreak(`break`) }
     }
 }
