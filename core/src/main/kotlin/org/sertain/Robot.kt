@@ -1,5 +1,4 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
-
 package org.sertain
 
 import android.support.annotation.VisibleForTesting
@@ -95,7 +94,7 @@ public interface RobotLifecycle {
             when (state) {
                 Robot.State.TELEOP -> lifecycle.onTeleopStart()
                 Robot.State.AUTO -> lifecycle.onAutoStart()
-                Robot.State.DISABLED -> lifecycle.onAutoStart()
+                Robot.State.DISABLED -> Unit
             }
 
             synchronized(listeners) { listeners += lifecycle }
@@ -138,9 +137,7 @@ public interface RobotLifecycle {
                     block: RobotLifecycle.() -> Unit
             ) {
                 state?.let { RobotLifecycle.state = it }
-                synchronized(listeners) {
-                    for (listener in listeners) listener.block()
-                }
+                synchronized(listeners) { for (listener in listeners) listener.block() }
             }
         }
     }
