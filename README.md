@@ -34,7 +34,7 @@ to your root build.gradle at the end of `repositories`:
 ```groovy
 allprojects {
     repositories {
-        ...
+        // ...
         maven { url 'https://jitpack.io' }
     }
 }
@@ -44,6 +44,6 @@ And then add the dependency:
 
 ```groovy
 dependencies {
-    compile 'com.github.sertain:sertain:x.x.x'
+    compile 'com.github.sertain:sertain:0.0.2'
 }
 ```
