@@ -5,24 +5,37 @@ import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.buttons.JoystickButton
 import org.sertain.command.Command
 
-public fun GenericHID.whenActive(buttonNumber: Int, command: Command) {
-    JoystickButton(this, buttonNumber).whenActive(command.mirror)
+/**
+ * @param button the number of the button to listen for
+ * @param command the command to execute
+ * @see JoystickButton.whenActive
+ */
+public fun GenericHID.whenActive(button: Int, command: Command) {
+    JoystickButton(this, button).whenActive(command.mirror)
 }
 
-public fun GenericHID.whileActive(buttonNumber: Int, command: Command) {
-    JoystickButton(this, buttonNumber).whileActive(command.mirror)
+/**
+ * @param button the number of the button to listen for
+ * @param command the command to execute
+ * @see JoystickButton.whileActive
+ */
+public fun GenericHID.whileActive(button: Int, command: Command) {
+    JoystickButton(this, button).whileActive(command.mirror)
 }
 
+/**
+ * @see [whenActive]
+ */
 public inline fun GenericHID.whenActive(
-        buttonNumber: Int,
+        button: Int,
         crossinline block: () -> Boolean
-) = whenActive(buttonNumber, object : Command() {
+) = whenActive(button, object : Command() {
     override fun execute() = block()
 })
 
 public inline fun GenericHID.whileActive(
-        buttonNumber: Int,
+        button: Int,
         crossinline block: () -> Boolean
-) = whileActive(buttonNumber, object : Command() {
+) = whileActive(button, object : Command() {
     override fun execute() = block()
 })

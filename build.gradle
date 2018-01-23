@@ -1,26 +1,30 @@
 buildscript {
-    ext.kotlinVersion = '1.2.10'
+    ext.kotlinVersion = '1.2.20'
 
     repositories {
+        google()
         jcenter()
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.13'
     }
 }
 
 allprojects {
     repositories {
+        google()
+        jcenter()
         maven { url 'http://first.wpi.edu/FRC/roborio/maven/release' }
         maven { url 'https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2' }
         maven { url 'http://dev.imjac.in/maven/' }
-        jcenter()
     }
 
     apply plugin: 'kotlin'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: 'org.jetbrains.dokka'
 
     // No-op if it's the root lib
     if (project == project.rootProject) return
@@ -34,6 +38,11 @@ allprojects {
     // Use tasks above to define artifacts
     artifacts {
         archives sourcesJar
+    }
+
+    dokka {
+        outputFormat = 'javadoc'
+        outputDirectory = "$buildDir/javadocs"
     }
 
     publishing {
@@ -61,7 +70,7 @@ allprojects {
 
                 groupId "org.sert2521"
                 artifactId project.name
-                version "1.0.0"
+                version "0.0.2"
 
                 artifact "$buildDir/libs/${project.name}.jar"
                 artifact sourcesJar
