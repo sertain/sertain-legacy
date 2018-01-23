@@ -33,6 +33,9 @@ public inline fun GenericHID.whenActive(
     override fun execute() = block()
 })
 
+/**
+ * @see [whileActive]
+ */
 public inline fun GenericHID.whileActive(
         button: Int,
         crossinline block: () -> Boolean
