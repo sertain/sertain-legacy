@@ -1,7 +1,7 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
 package org.sertain.hardware
 
-import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.buttons.JoystickButton
 import org.sertain.command.Command
 
@@ -10,7 +10,7 @@ import org.sertain.command.Command
  * @param command the command to execute
  * @see JoystickButton.whenActive
  */
-public fun Joystick.whenActive(button: Int, command: Command) {
+public fun GenericHID.whenActive(button: Int, command: Command) {
     JoystickButton(this, button).whenActive(command.mirror)
 }
 
@@ -19,14 +19,14 @@ public fun Joystick.whenActive(button: Int, command: Command) {
  * @param command the command to execute
  * @see JoystickButton.whileActive
  */
-public fun Joystick.whileActive(button: Int, command: Command) {
+public fun GenericHID.whileActive(button: Int, command: Command) {
     JoystickButton(this, button).whileActive(command.mirror)
 }
 
 /**
  * @see [whenActive]
  */
-public inline fun Joystick.whenActive(
+public inline fun GenericHID.whenActive(
         button: Int,
         crossinline block: () -> Boolean
 ) = whenActive(button, object : Command() {
@@ -36,7 +36,7 @@ public inline fun Joystick.whenActive(
 /**
  * @see [whileActive]
  */
-public inline fun Joystick.whileActive(
+public inline fun GenericHID.whileActive(
         button: Int,
         crossinline block: () -> Boolean
 ) = whileActive(button, object : Command() {
