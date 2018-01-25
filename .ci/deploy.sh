@@ -30,9 +30,13 @@ git commit -m "Update docs from https://github.com/sertain/sertain/compare/${TRA
 
 # If the only changes are timestamp updates, then bail as well. This can be determined by checking
 # if the number of additions, deletions, and changed files all match up.
+git log -1 --shortstat
 FILES=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(f) }')
 INSERT=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(i) }')
 DELETE=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(d) }')
+echo $FILES
+echo $INSERT
+echo $DELETE
 
 if [ "$FILES" = "$INSERT" ] && [ "$INSERT" = "$DELETE" ]; then
    echo "Only timestamp updates; exiting."
