@@ -25,6 +25,9 @@ if git diff --quiet; then
     exit 0
 fi
 
+git add .
+git commit -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
+
 # If the only changes are timestamp updates, then bail as well. This can be determined by checking
 # if the number of additions, deletions, and changed files all match up.
 FILES=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(f) }')
@@ -36,6 +39,4 @@ if [ "$FILES" = "$INSERT" ] && [ "$INSERT" = "$DELETE" ]; then
    exit 0
 fi
 
-git add .
-git commit -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
 git push -u origin master &> /dev/null
