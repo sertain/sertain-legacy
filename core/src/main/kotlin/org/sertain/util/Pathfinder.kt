@@ -8,6 +8,19 @@ import jaci.pathfinder.followers.EncoderFollower
 import jaci.pathfinder.modifiers.TankModifier
 
 /**
+ * Creates a pair of x and y coordinates.
+ */
+public infix fun Double.with(y: Double) = this to y
+
+/**
+ * Creates a [Waypoint] from a pair of coordinates and an exit angle in degrees.
+ *
+ * @see Waypoint
+ */
+public infix fun Pair<Double, Double>.angle(degrees: Double) =
+        Waypoint(first, second, Pathfinder.d2r(degrees))
+
+/**
  * Creates a configuration for the trajectory.
  *
  * @param maxVelocity the maximum allowable velocity for the robot
