@@ -70,7 +70,7 @@ public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncode
  * @param inverted whether the Talon should be inverted
  * @return the original Talon
  */
-public fun Talon.inverted(inverted: Boolean = true) = apply { this.inverted = inverted }
+public fun Talon.invert(inverted: Boolean = true) = apply { this.inverted = inverted }
 
 /**
  * Stops the Talon until [WPI_TalonSRX.set] is called again.
