@@ -117,6 +117,16 @@ public abstract class PathInitializer {
     public val heading get() = left.heading
 
     /**
+     * Resets both [EncoderFollower]s for this path.
+     *
+     * @see EncoderFollower.reset
+     */
+    public fun reset() {
+        left.reset()
+        right.reset()
+    }
+
+    /**
      * Logs a list of up to 50 generated points in the form "x, y" to stdout, separated by newline.
      * This format makes it easy to copy and paste the points into a graphing utility such as
      * Desmos.
