@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("RobotUtils")
 package org.sertain
 
 import android.support.annotation.VisibleForTesting

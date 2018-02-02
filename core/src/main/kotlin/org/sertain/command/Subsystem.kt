@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("SubsystemUtils")
 package org.sertain.command
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder
