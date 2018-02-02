@@ -3,8 +3,12 @@
 package org.sertain.hardware
 
 import edu.wpi.first.wpilibj.GenericHID
+import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.buttons.JoystickButton
 import org.sertain.command.Command
+
+/** @return [Joystick.getThrottle], scaled to positive values (0..1) */
+public val Joystick.scaledThrottle get() = (throttle + 1) / 2
 
 /**
  * @param button the number of the button to listen for
