@@ -44,6 +44,20 @@ allprojects {
     dokka {
         outputFormat = 'javadoc'
         outputDirectory = "$buildDir/javadocs"
+
+        linkMapping {
+            dir = 'src/main/kotlin'
+            url = 'https://github.com/sertain/sertain/tree/master/core/src/main/kotlin'
+            suffix = '#L'
+        }
+
+        externalDocumentationLink {
+            url = new URL('https://www.ctr-electronics.com/downloads/api/java/html/')
+        }
+
+        externalDocumentationLink {
+            url = new URL('http://first.wpi.edu/FRC/roborio/release/docs/java/')
+        }
     }
 
     publishing {
