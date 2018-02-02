@@ -11,7 +11,7 @@ fi
 
 # Upload docs
 cd ..
-git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs.git" javadocs &> /dev/null
+git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs.git" javadocs
 
 git config --global user.name "Travis CI"
 git config --global user.email "social@sert2521.org"
@@ -19,8 +19,7 @@ git config --global user.email "social@sert2521.org"
 cp -r sertain/core/build/javadocs/** javadocs
 cd javadocs
 
-# If there are no real changes to the compiled out
-# e.g. this is a README update, then just bail.
+# If there are no real changes to the compiled out (e.g. this is a README update), then just bail.
 if git diff --quiet; then
     echo "No changes to the output on this push; exiting."
     exit 0
@@ -28,4 +27,17 @@ fi
 
 git add .
 git commit -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
-git push -u origin master &> /dev/null
+
+# If the only changes are timestamp updates, then bail as well. This can be determined by checking
+# if the number of additions, deletions, and changed files all match up.
+git log -1 --shortstat
+FILES=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(f) }')
+INSERT=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(i) }')
+DELETE=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(d) }')
+
+if [ "$FILES" = "$INSERT" ] && [ "$INSERT" = "$DELETE" ]; then
+   echo "Only timestamp updates; exiting."
+   exit 0
+fi
+
+git push -u origin master
