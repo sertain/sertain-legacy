@@ -7,8 +7,6 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "doc-deploys" ]; t
     exit 0
 fi
 
-echo "Doing deploy..."
-
 ./gradlew dokka
 
 # Upload docs
