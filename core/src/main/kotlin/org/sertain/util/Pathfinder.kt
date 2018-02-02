@@ -7,9 +7,7 @@ import jaci.pathfinder.Waypoint
 import jaci.pathfinder.followers.EncoderFollower
 import jaci.pathfinder.modifiers.TankModifier
 
-/**
- * Creates a pair of x and y coordinates.
- */
+/** Creates a pair of x and y coordinates. */
 public infix fun Double.with(y: Double) = this to y
 
 /**
@@ -49,9 +47,7 @@ public fun TrajectoryConfig(
     maxJerk
 )
 
-/**
- * @see Pathfinder.generate
- */
+/** @see Pathfinder.generate */
 public fun Trajectory.Config.generate(points: Array<out Waypoint>): Trajectory =
         Pathfinder.generate(points, this)
 
@@ -106,14 +102,10 @@ public abstract class PathInitializer {
      */
     public val right get() = followers.second
 
-    /**
-     * @see EncoderFollower.isFinished
-     */
+    /** @see EncoderFollower.isFinished */
     public val isFinished get() = left.isFinished
 
-    /**
-     * @see EncoderFollower.getHeading
-     */
+    /** @see EncoderFollower.getHeading */
     public val heading get() = left.heading
 
     /**

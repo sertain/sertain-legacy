@@ -23,9 +23,7 @@ public fun GenericHID.whileActive(button: Int, command: Command) {
     JoystickButton(this, button).whileActive(command.mirror)
 }
 
-/**
- * @see [whenActive]
- */
+/** @see [whenActive] */
 public inline fun GenericHID.whenActive(
         button: Int,
         crossinline block: () -> Boolean
@@ -33,9 +31,7 @@ public inline fun GenericHID.whenActive(
     override fun execute() = block()
 })
 
-/**
- * @see [whileActive]
- */
+/** @see [whileActive] */
 public inline fun GenericHID.whileActive(
         button: Int,
         crossinline block: () -> Boolean

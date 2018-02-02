@@ -14,9 +14,7 @@ public val station: AllianceStation?
         else -> Alliance.INVALID
     }, DriverStation.getInstance().location)
 
-/**
- * The team's alliance color.
- */
+/** The team's alliance color. */
 public enum class Alliance {
     RED,
     BLUE,
