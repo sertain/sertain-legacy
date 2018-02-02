@@ -2,7 +2,7 @@
 set -eo pipefail # Exit with nonzero exit code if anything fails
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
-if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "doc-deploys" ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "master" ]; then
     echo "Skipping deploy."
     exit 0
 fi
@@ -11,7 +11,7 @@ fi
 
 # Upload docs
 cd ..
-git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs-tests.git" javadocs
+git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs.git" javadocs
 
 git config --global user.name "Travis CI"
 git config --global user.email "social@sert2521.org"
@@ -34,9 +34,6 @@ git log -1 --shortstat
 FILES=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(f) }')
 INSERT=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(i) }')
 DELETE=$(git log -1 --shortstat | awk '/^ [0-9]/ { f += $1; i += $4; d += $6 } END { printf(d) }')
-echo $FILES
-echo $INSERT
-echo $DELETE
 
 if [ "$FILES" = "$INSERT" ] && [ "$INSERT" = "$DELETE" ]; then
    echo "Only timestamp updates; exiting."
