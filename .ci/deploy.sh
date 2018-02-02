@@ -16,6 +16,8 @@ echo "Uploading documentation..."
 cd ..
 git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs-tests.git" javadocs
 
+echo "Done cloning..."
+
 git config --global user.name "Travis CI"
 git config --global user.email "social@sert2521.org"
 
