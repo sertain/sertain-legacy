@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail # Exit with nonzero exit code if anything fails
+set -eo pipefail # Exit with nonzero exit code if anything fails
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
 if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "doc-deploys" ]; then
@@ -12,11 +12,8 @@ echo "Doing deploy..."
 ./gradlew dokka
 
 # Upload docs
-echo "Uploading documentation..."
 cd ..
 git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs-tests.git" javadocs
-
-echo "Done cloning..."
 
 git config --global user.name "Travis CI"
 git config --global user.email "social@sert2521.org"
@@ -30,12 +27,8 @@ if git diff --quiet; then
     exit 0
 fi
 
-echo "Got changes"
-
 git add .
 git commit -m "Update docs from https://github.com/sertain/sertain/compare/${TRAVIS_COMMIT_RANGE}"
-
-echo "Good commit"
 
 # If the only changes are timestamp updates, then bail as well. This can be determined by checking
 # if the number of additions, deletions, and changed files all match up.
@@ -52,4 +45,4 @@ if [ "$FILES" = "$INSERT" ] && [ "$INSERT" = "$DELETE" ]; then
    exit 0
 fi
 
-git push -u origin master &> /dev/null
+git push -u origin master
