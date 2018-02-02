@@ -46,19 +46,13 @@ public interface RobotLifecycle {
      */
     public fun execute() = Unit
 
-    /**
-     * Runs periodically (default = every 20ms) while the robot is in the disabled state.
-     */
+    /** Runs periodically (default = every 20ms) while the robot is in the disabled state. */
     public fun executeDisabled() = Unit
 
-    /**
-     * Runs periodically (default = every 20ms) while the robot is in the teleoperated mode.
-     */
+    /** Runs periodically (default = every 20ms) while the robot is in the teleoperated mode. */
     public fun executeTeleop() = Unit
 
-    /**
-     * Runs periodically (default = every 20ms) while the robot is in the autonomous mode.
-     */
+    /** Runs periodically (default = every 20ms) while the robot is in the autonomous mode. */
     public fun executeAuto() = Unit
 
     /**
@@ -143,9 +137,7 @@ public interface RobotLifecycle {
     }
 }
 
-/**
- * Base robot class which must be used for [RobotLifecycle] callbacks to work.
- */
+/** Base robot class which must be used for [RobotLifecycle] callbacks to work. */
 public abstract class Robot : IterativeRobot(), RobotLifecycle {
     private var mode = State.DISABLED
         set(value) {

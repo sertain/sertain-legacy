@@ -1,14 +1,15 @@
 buildscript {
-    ext.kotlinVersion = '1.2.20'
+    ext.kotlinVersion = '1.2.21'
 
     repositories {
         google()
         jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.13'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.16-eap-3'
     }
 }
 
@@ -43,6 +44,20 @@ allprojects {
     dokka {
         outputFormat = 'javadoc'
         outputDirectory = "$buildDir/javadocs"
+
+        linkMapping {
+            dir = 'src/main/kotlin'
+            url = 'https://github.com/sertain/sertain/tree/master/core/src/main/kotlin'
+            suffix = '#L'
+        }
+
+        externalDocumentationLink {
+            url = new URL('https://www.ctr-electronics.com/downloads/api/java/html/')
+        }
+
+        externalDocumentationLink {
+            url = new URL('http://first.wpi.edu/FRC/roborio/release/docs/java/')
+        }
     }
 
     publishing {
@@ -70,7 +85,7 @@ allprojects {
 
                 groupId "org.sert2521"
                 artifactId project.name
-                version "0.0.2"
+                version "0.0.3"
 
                 artifact "$buildDir/libs/${project.name}.jar"
                 artifact sourcesJar

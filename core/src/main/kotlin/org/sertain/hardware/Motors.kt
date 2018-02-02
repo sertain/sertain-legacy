@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("Motors")
 package org.sertain.hardware
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
@@ -14,9 +15,7 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
-/**
- * Gets the encoder position of the currently selected sensor.
- */
+/** Gets the encoder position of the currently selected sensor. */
 public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
 
 /**
@@ -33,6 +32,7 @@ public operator fun Talon.plus(other: Talon) = apply { other.follow(this) }
  * @param enable whether break mode should be enabled
  * @return the original Talon
  */
+@JvmOverloads
 public fun Talon.setBreak(enable: Boolean = true) = apply {
     setNeutralMode(if (enable) NeutralMode.Brake else NeutralMode.Coast)
 }
@@ -59,6 +59,7 @@ public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
  * @param device the device to reset, default is FeedbackDevice.QuadEncoder
  * @return the original Talon
  */
+@JvmOverloads
 public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncoder) = apply {
     configSelectedFeedbackSensor(device, 0, Int.MAX_VALUE)
     setSelectedSensorPosition(0, 0, Int.MAX_VALUE)
@@ -70,7 +71,8 @@ public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncode
  * @param inverted whether the Talon should be inverted
  * @return the original Talon
  */
-public fun Talon.inverted(inverted: Boolean = true) = apply { this.inverted = inverted }
+@JvmOverloads
+public fun Talon.invert(inverted: Boolean = true) = apply { this.inverted = inverted }
 
 /**
  * Stops the Talon until [WPI_TalonSRX.set] is called again.

@@ -4,7 +4,7 @@ check.dependsOn 'ktlint'
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation 'com.android.support:support-annotations:27.0.2'
-    compile 'edu.wpi.first.wpilibj:wpilibj-java:2018.1.1'
+    compile 'edu.wpi.first.wpilibj:wpilibj-java:2018.2.2'
     compileOnly 'openrio.mirror.third.ctre:CTRE-phoenix-java:5.1.2.1'
     compileOnly 'jaci.pathfinder:Pathfinder-Java:1.8'
 

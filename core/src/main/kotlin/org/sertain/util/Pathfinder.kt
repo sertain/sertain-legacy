@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("PathfinderUtils")
 package org.sertain.util
 
 import jaci.pathfinder.Pathfinder
@@ -6,6 +7,17 @@ import jaci.pathfinder.Trajectory
 import jaci.pathfinder.Waypoint
 import jaci.pathfinder.followers.EncoderFollower
 import jaci.pathfinder.modifiers.TankModifier
+
+/** Creates a pair of x and y coordinates. */
+public infix fun Double.with(y: Double) = this to y
+
+/**
+ * Creates a [Waypoint] from a pair of coordinates and an exit angle in degrees.
+ *
+ * @see Waypoint
+ */
+public infix fun Pair<Double, Double>.angle(degrees: Double) =
+        Waypoint(first, second, Pathfinder.d2r(degrees))
 
 /**
  * Creates a configuration for the trajectory.
@@ -21,24 +33,22 @@ import jaci.pathfinder.modifiers.TankModifier
 @Suppress("FunctionName")
 @JvmOverloads
 public fun TrajectoryConfig(
-    maxVelocity: Double,
-    maxAccel: Double,
-    maxJerk: Double,
-    fit: Trajectory.FitMethod = Trajectory.FitMethod.HERMITE_CUBIC,
-    samples: Int = Trajectory.Config.SAMPLES_HIGH,
-    ticks: Double = 0.05 // 20 millis
+        maxVelocity: Double,
+        maxAccel: Double,
+        maxJerk: Double,
+        fit: Trajectory.FitMethod = Trajectory.FitMethod.HERMITE_CUBIC,
+        samples: Int = Trajectory.Config.SAMPLES_HIGH,
+        ticks: Double = 0.05 // 20 millis
 ): Trajectory.Config = Trajectory.Config(
-    fit,
-    samples,
-    ticks,
-    maxVelocity,
-    maxAccel,
-    maxJerk
+        fit,
+        samples,
+        ticks,
+        maxVelocity,
+        maxAccel,
+        maxJerk
 )
 
-/**
- * @see Pathfinder.generate
- */
+/** @see Pathfinder.generate */
 public fun Trajectory.Config.generate(points: Array<out Waypoint>): Trajectory =
         Pathfinder.generate(points, this)
 
@@ -93,15 +103,21 @@ public abstract class PathInitializer {
      */
     public val right get() = followers.second
 
-    /**
-     * @see EncoderFollower.isFinished
-     */
+    /** @see EncoderFollower.isFinished */
     public val isFinished get() = left.isFinished
 
-    /**
-     * @see EncoderFollower.getHeading
-     */
+    /** @see EncoderFollower.getHeading */
     public val heading get() = left.heading
+
+    /**
+     * Resets both [EncoderFollower]s for this path.
+     *
+     * @see EncoderFollower.reset
+     */
+    public fun reset() {
+        left.reset()
+        right.reset()
+    }
 
     /**
      * Logs a list of up to 50 generated points in the form "x, y" to stdout, separated by newline.
