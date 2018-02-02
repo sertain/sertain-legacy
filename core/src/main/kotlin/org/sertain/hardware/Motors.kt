@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("Motors")
 package org.sertain.hardware
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice

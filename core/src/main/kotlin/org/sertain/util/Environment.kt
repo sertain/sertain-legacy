@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("Environment")
 package org.sertain.util
 
 import edu.wpi.first.wpilibj.DriverStation

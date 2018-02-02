@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("Joysticks")
 package org.sertain.hardware
 
 import edu.wpi.first.wpilibj.GenericHID

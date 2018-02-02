@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("PathfinderUtils")
 package org.sertain.util
 
 import jaci.pathfinder.Pathfinder
@@ -32,19 +33,19 @@ public infix fun Pair<Double, Double>.angle(degrees: Double) =
 @Suppress("FunctionName")
 @JvmOverloads
 public fun TrajectoryConfig(
-    maxVelocity: Double,
-    maxAccel: Double,
-    maxJerk: Double,
-    fit: Trajectory.FitMethod = Trajectory.FitMethod.HERMITE_CUBIC,
-    samples: Int = Trajectory.Config.SAMPLES_HIGH,
-    ticks: Double = 0.05 // 20 millis
+        maxVelocity: Double,
+        maxAccel: Double,
+        maxJerk: Double,
+        fit: Trajectory.FitMethod = Trajectory.FitMethod.HERMITE_CUBIC,
+        samples: Int = Trajectory.Config.SAMPLES_HIGH,
+        ticks: Double = 0.05 // 20 millis
 ): Trajectory.Config = Trajectory.Config(
-    fit,
-    samples,
-    ticks,
-    maxVelocity,
-    maxAccel,
-    maxJerk
+        fit,
+        samples,
+        ticks,
+        maxVelocity,
+        maxAccel,
+        maxJerk
 )
 
 /** @see Pathfinder.generate */

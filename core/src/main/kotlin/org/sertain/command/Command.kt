@@ -1,4 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
+@file:JvmName("CommandUtils")
 package org.sertain.command
 
 import edu.wpi.first.wpilibj.command.CommandGroup
