@@ -104,7 +104,10 @@ public abstract class PidCommand @JvmOverloads constructor(
 
     /** @see edu.wpi.first.wpilibj.command.PIDCommand.setInputRange */
     protected var inputRange: ClosedRange<Double> = 0.0..0.0
-        set(value) = mirror.setInputRange(value.start, value.endInclusive)
+        set(value) {
+            field = value
+            mirror.setInputRange(value.start, value.endInclusive)
+        }
 
     /** @see edu.wpi.first.wpilibj.command.PIDCommand.requires */
     public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
