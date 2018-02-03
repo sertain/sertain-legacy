@@ -140,20 +140,23 @@ internal class PidCommandMirror(
     @Suppress("RedundantOverride") // Needed for visibility override
     public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
 
+    @Suppress("RedundantOverride") // Needed for visibility override
     public override fun setSetpoint(setpoint: Double) = super.setSetpoint(setpoint)
 
+    @Suppress("RedundantOverride") // Needed for visibility override
     public override fun getSetpoint() = super.getSetpoint()
 
+    @Suppress("RedundantOverride") // Needed for visibility override
     public override fun setInputRange(minimumInput: Double, maximumInput: Double) =
             super.setInputRange(minimumInput, maximumInput)
 
     override fun initialize() = command.onCreate()
 
-    override fun usePIDOutput(output: Double) = command.usePidOutput(output)
-
     override fun isFinished() = command.execute()
 
     override fun returnPIDInput() = command.returnPidInput()
+
+    override fun usePIDOutput(output: Double) = command.usePidOutput(output)
 
     override fun end() = command.onDestroy()
 
