@@ -132,7 +132,7 @@ public interface RobotLifecycle {
                     block: RobotLifecycle.() -> Unit
             ) {
                 state?.let { RobotLifecycle.state = it }
-                synchronized(listeners) { for (listener in listeners) listener.block() }
+                synchronized(listeners) { for (listener in listeners.toList()) listener.block() }
             }
         }
     }
