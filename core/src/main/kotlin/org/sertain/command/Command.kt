@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup
 import edu.wpi.first.wpilibj.command.Subsystem
 import java.util.concurrent.TimeUnit
 import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
+import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
 
 /** @see CommandGroup.addSequential */
 public infix fun Command.then(command: Command) =
@@ -77,6 +78,68 @@ internal class CommandMirror(
     override fun initialize() = command.onCreate()
 
     override fun isFinished(): Boolean = command.execute()
+
+    override fun end() = command.onDestroy()
+
+    override fun execute() = Unit
+}
+
+public abstract class PidCommand @JvmOverloads constructor(
+        p: Double,
+        i: Double = 0.0,
+        d: Double = 0.0
+) {
+    private val mirror = PidCommandMirror(this, p, i, d)
+
+    public var setpoint: Double
+        get() = mirror.setpoint
+        set(value) {
+            mirror.setpoint = value
+        }
+
+    protected var inputRange: ClosedFloatingPointRange<Double> = 0.0..0.0
+        set(value) = mirror.setInputRange(value.start, value.endInclusive)
+
+    public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
+
+    public fun start() = mirror.start()
+
+    public fun cancel() = mirror.cancel()
+
+    public open fun onCreate() = Unit
+
+    public abstract fun usePidOutput()
+
+    public abstract fun execute(): Boolean
+
+    public abstract fun returnPidInput() : Double
+
+    public open fun onDestroy() = Unit
+}
+
+internal class PidCommandMirror(
+        private val command: PidCommand,
+        p: Double,
+        i: Double,
+        d: Double
+) : WpiLibPidCommand(p, i, d), Requirable {
+    @Suppress("RedundantOverride") // Needed for visibility override
+    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+
+    public override fun setSetpoint(setpoint: Double) = super.setSetpoint(setpoint)
+
+    public override fun getSetpoint() = super.getSetpoint()
+
+    public override fun setInputRange(minimumInput: Double, maximumInput: Double) =
+        super.setInputRange(minimumInput, maximumInput)
+
+    override fun initialize() = command.onCreate()
+
+    override fun usePIDOutput(output: Double) = command.usePidOutput()
+
+    override fun isFinished() = command.execute()
+
+    override fun returnPIDInput() = command.returnPidInput()
 
     override fun end() = command.onDestroy()
 
