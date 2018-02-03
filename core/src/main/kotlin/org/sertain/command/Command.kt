@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup
 import edu.wpi.first.wpilibj.command.Subsystem
 import java.util.concurrent.TimeUnit
 import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
+import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
 
 /** @see CommandGroup.addSequential */
 public infix fun Command.then(command: Command) =
@@ -61,10 +62,6 @@ public abstract class Command @JvmOverloads constructor(
     public open fun onDestroy() = Unit
 }
 
-private interface Requirable {
-    fun requires(subsystem: Subsystem)
-}
-
 /** A mirror of WPILib's Command class. */
 internal class CommandMirror(
         private val command: Command,
@@ -81,4 +78,91 @@ internal class CommandMirror(
     override fun end() = command.onDestroy()
 
     override fun execute() = Unit
+}
+
+/** @see edu.wpi.first.wpilibj.command.PIDCommand */
+public abstract class PidCommand @JvmOverloads constructor(
+        p: Double,
+        i: Double = 0.0,
+        d: Double = 0.0
+) {
+    private val mirror = PidCommandMirror(this, p, i, d)
+
+    /**
+     * @see edu.wpi.first.wpilibj.command.PIDCommand.getSetpoint
+     * @see edu.wpi.first.wpilibj.command.PIDCommand.setSetpoint
+     */
+    protected var setpoint: Double
+        get() = mirror.setpoint
+        set(value) {
+            mirror.setpoint = value
+        }
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.setInputRange */
+    protected var inputRange: ClosedRange<Double> = 0.0..0.0
+        set(value) {
+            field = value
+            mirror.setInputRange(value.start, value.endInclusive)
+        }
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.requires */
+    public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.start */
+    public fun start() = mirror.start()
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.cancel */
+    public fun cancel() = mirror.cancel()
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.initialize */
+    public open fun onCreate() = Unit
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.execute */
+    public abstract fun execute(): Boolean
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.returnPIDInput */
+    public abstract fun returnPidInput(): Double
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.usePIDOutput */
+    public abstract fun usePidOutput(output: Double)
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.end */
+    public open fun onDestroy() = Unit
+}
+
+/** A mirror of WPILib's PIDCommand class. */
+internal class PidCommandMirror(
+        private val command: PidCommand,
+        p: Double,
+        i: Double,
+        d: Double
+) : WpiLibPidCommand(p, i, d), Requirable {
+    @Suppress("RedundantOverride") // Needed for visibility override
+    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+
+    @Suppress("RedundantOverride") // Needed for visibility override
+    public override fun setSetpoint(setpoint: Double) = super.setSetpoint(setpoint)
+
+    @Suppress("RedundantOverride") // Needed for visibility override
+    public override fun getSetpoint() = super.getSetpoint()
+
+    @Suppress("RedundantOverride") // Needed for visibility override
+    public override fun setInputRange(minimumInput: Double, maximumInput: Double) =
+            super.setInputRange(minimumInput, maximumInput)
+
+    override fun initialize() = command.onCreate()
+
+    override fun isFinished() = command.execute()
+
+    override fun returnPIDInput() = command.returnPidInput()
+
+    override fun usePIDOutput(output: Double) = command.usePidOutput(output)
+
+    override fun end() = command.onDestroy()
+
+    override fun execute() = Unit
+}
+
+private interface Requirable {
+    fun requires(subsystem: Subsystem)
 }
