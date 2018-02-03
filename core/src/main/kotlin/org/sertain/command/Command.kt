@@ -121,14 +121,14 @@ public abstract class PidCommand @JvmOverloads constructor(
     /** @see edu.wpi.first.wpilibj.command.PIDCommand.initialize */
     public open fun onCreate() = Unit
 
-    /** @see edu.wpi.first.wpilibj.command.PIDCommand.usePIDOutput */
-    public abstract fun usePidOutput()
-
     /** @see edu.wpi.first.wpilibj.command.PIDCommand.execute */
     public abstract fun execute(): Boolean
 
     /** @see edu.wpi.first.wpilibj.command.PIDCommand.returnPIDInput */
     public abstract fun returnPidInput(): Double
+
+    /** @see edu.wpi.first.wpilibj.command.PIDCommand.usePIDOutput */
+    public abstract fun usePidOutput(output: Double)
 
     /** @see edu.wpi.first.wpilibj.command.PIDCommand.end */
     public open fun onDestroy() = Unit
@@ -153,7 +153,7 @@ internal class PidCommandMirror(
 
     override fun initialize() = command.onCreate()
 
-    override fun usePIDOutput(output: Double) = command.usePidOutput()
+    override fun usePIDOutput(output: Double) = command.usePidOutput(output)
 
     override fun isFinished() = command.execute()
 
