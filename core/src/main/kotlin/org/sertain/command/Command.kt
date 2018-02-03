@@ -96,7 +96,7 @@ public abstract class PidCommand @JvmOverloads constructor(
      * @see edu.wpi.first.wpilibj.command.PIDCommand.getSetpoint
      * @see edu.wpi.first.wpilibj.command.PIDCommand.setSetpoint
      */
-    public var setpoint: Double
+    protected var setpoint: Double
         get() = mirror.setpoint
         set(value) {
             mirror.setpoint = value
