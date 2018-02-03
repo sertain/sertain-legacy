@@ -62,10 +62,6 @@ public abstract class Command @JvmOverloads constructor(
     public open fun onDestroy() = Unit
 }
 
-private interface Requirable {
-    fun requires(subsystem: Subsystem)
-}
-
 /** A mirror of WPILib's Command class. */
 internal class CommandMirror(
         private val command: Command,
@@ -162,4 +158,8 @@ internal class PidCommandMirror(
     override fun end() = command.onDestroy()
 
     override fun execute() = Unit
+}
+
+private interface Requirable {
+    fun requires(subsystem: Subsystem)
 }
