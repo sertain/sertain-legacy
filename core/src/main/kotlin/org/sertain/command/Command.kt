@@ -5,8 +5,7 @@ package org.sertain.command
 import edu.wpi.first.wpilibj.command.CommandGroup
 import edu.wpi.first.wpilibj.command.Subsystem
 import java.util.concurrent.TimeUnit
-
-private typealias WpiLibCommand = edu.wpi.first.wpilibj.command.Command
+import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
 
 /** @see CommandGroup.addSequential */
 public infix fun Command.then(command: Command) =

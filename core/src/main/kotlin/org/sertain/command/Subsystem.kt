@@ -4,8 +4,7 @@ package org.sertain.command
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder
 import org.sertain.RobotLifecycle
-
-private typealias WpiLibSubsystem = edu.wpi.first.wpilibj.command.Subsystem
+import edu.wpi.first.wpilibj.command.Subsystem as WpiLibSubsystem
 
 /** @see edu.wpi.first.wpilibj.command.Subsystem */
 public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle {
