@@ -24,15 +24,18 @@ public infix fun CommandGroup.and(command: CommandBridge) = addParallel(command)
 
 /** @see CommandGroup.addSequential */
 @JvmOverloads
-public fun CommandGroup.addSequential(command: CommandBridge, timeout: Double = 0.0): CommandGroup {
-    addSequential(command.mirror, timeout)
+public fun CommandGroup.addSequential(
+        command: CommandBridge,
+        timeout: Double? = null
+): CommandGroup {
+    if (timeout == null) addSequential(command.mirror) else addSequential(command.mirror, timeout)
     return this
 }
 
 /** @see CommandGroup.addParallel */
 @JvmOverloads
-public fun CommandGroup.addParallel(command: CommandBridge, timeout: Double = 0.0): CommandGroup {
-    addParallel(command.mirror, timeout)
+public fun CommandGroup.addParallel(command: CommandBridge, timeout: Double? = null): CommandGroup {
+    if (timeout == null) addParallel(command.mirror) else addParallel(command.mirror, timeout)
     return this
 }
 
