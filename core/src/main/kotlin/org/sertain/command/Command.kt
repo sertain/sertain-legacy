@@ -9,39 +9,43 @@ import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
 import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
 
 /** @see CommandGroup.addSequential */
-public infix fun Command.then(command: Command) =
+public infix fun CommandBridge.then(command: CommandBridge) =
         CommandGroup().addSequential(this).addSequential(command)
 
 /** @see CommandGroup.addParallel */
-public infix fun Command.and(command: Command) =
+public infix fun CommandBridge.and(command: CommandBridge) =
         CommandGroup().addParallel(this).addParallel(command)
 
 /** @see CommandGroup.addSequential */
-public infix fun CommandGroup.then(command: Command) = addSequential(command)
+public infix fun CommandGroup.then(command: CommandBridge) = addSequential(command)
 
 /** @see CommandGroup.addParallel */
-public infix fun CommandGroup.and(command: Command) = addParallel(command)
+public infix fun CommandGroup.and(command: CommandBridge) = addParallel(command)
 
 /** @see CommandGroup.addSequential */
 @JvmOverloads
-public fun CommandGroup.addSequential(command: Command, timeout: Double = 0.0): CommandGroup {
+public fun CommandGroup.addSequential(command: CommandBridge, timeout: Double = 0.0): CommandGroup {
     addSequential(command.mirror, timeout)
     return this
 }
 
 /** @see CommandGroup.addParallel */
 @JvmOverloads
-public fun CommandGroup.addParallel(command: Command, timeout: Double = 0.0): CommandGroup {
+public fun CommandGroup.addParallel(command: CommandBridge, timeout: Double = 0.0): CommandGroup {
     addParallel(command.mirror, timeout)
     return this
+}
+
+public abstract class CommandBridge {
+    internal abstract val mirror: WpiLibCommand
 }
 
 /** @see edu.wpi.first.wpilibj.command.Command */
 public abstract class Command @JvmOverloads constructor(
         timeout: Long = 0,
         unit: TimeUnit = TimeUnit.MILLISECONDS
-) {
-    internal val mirror = CommandMirror(this, timeout, unit)
+) : CommandBridge() {
+    override val mirror = CommandMirror(this, timeout, unit)
 
     /** @see edu.wpi.first.wpilibj.command.Command.requires */
     public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
@@ -85,8 +89,8 @@ public abstract class PidCommand @JvmOverloads constructor(
         p: Double,
         i: Double = 0.0,
         d: Double = 0.0
-) {
-    private val mirror = PidCommandMirror(this, p, i, d)
+) : CommandBridge() {
+    override val mirror = PidCommandMirror(this, p, i, d)
 
     /**
      * @see edu.wpi.first.wpilibj.command.PIDCommand.getSetpoint

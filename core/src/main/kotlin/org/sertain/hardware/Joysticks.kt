@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.buttons.JoystickButton
 import org.sertain.command.Command
+import org.sertain.command.CommandBridge
 
 /** @return [Joystick.getThrottle], scaled to positive values (0..1) */
 public val Joystick.scaledThrottle get() = (throttle + 1) / 2
@@ -15,7 +16,7 @@ public val Joystick.scaledThrottle get() = (throttle + 1) / 2
  * @param command the command to execute
  * @see JoystickButton.whenActive
  */
-public fun GenericHID.whenActive(button: Int, command: Command) {
+public fun GenericHID.whenActive(button: Int, command: CommandBridge) {
     JoystickButton(this, button).whenActive(command.mirror)
 }
 
@@ -24,7 +25,7 @@ public fun GenericHID.whenActive(button: Int, command: Command) {
  * @param command the command to execute
  * @see JoystickButton.whileActive
  */
-public fun GenericHID.whileActive(button: Int, command: Command) {
+public fun GenericHID.whileActive(button: Int, command: CommandBridge) {
     JoystickButton(this, button).whileActive(command.mirror)
 }
 
