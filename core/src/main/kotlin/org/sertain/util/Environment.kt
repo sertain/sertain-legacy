@@ -3,6 +3,7 @@
 package org.sertain.util
 
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser as NativeSendableChooser
 
 /**
  * Gets the current alliance station from the FMS.
@@ -30,3 +31,12 @@ public enum class Alliance {
  * @property station the station number for this color, between 1 and 3.
  */
 public data class AllianceStation(public val alliance: Alliance, public val station: Int)
+
+@Suppress("FunctionName")
+public fun <T> SendableChooser(
+        default: Pair<String, T>,
+        vararg others: Pair<String, T>
+) = NativeSendableChooser<T>().apply {
+    addDefault(default.first, default.second)
+    for ((name, value) in others) addObject(name, value)
+}
