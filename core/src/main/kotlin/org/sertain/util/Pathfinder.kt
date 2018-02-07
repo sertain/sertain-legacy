@@ -107,7 +107,7 @@ public abstract class PathInitializer {
     public val isFinished get() = left.isFinished
 
     /** @see EncoderFollower.getHeading */
-    public val heading get() = left.heading
+    public val heading get() = Pathfinder.r2d(left.heading)
 
     /**
      * Resets both [EncoderFollower]s for this path.
