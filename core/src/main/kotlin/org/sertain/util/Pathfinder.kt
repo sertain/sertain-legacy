@@ -124,7 +124,7 @@ public abstract class PathInitializer {
      * This format makes it easy to copy and paste the points into a graphing utility such as
      * Desmos.
      */
-    protected fun logGeneratedPoints() {
+    public fun logGeneratedPoints() {
         println(
             """
             |Generated ${trajectory.segments.size} points:
