@@ -90,8 +90,8 @@ public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
  */
 @JvmOverloads
 public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncoder) = apply {
-    configSelectedFeedbackSensor(device, 0, Int.MAX_VALUE)
-    setSelectedSensorPosition(0, 0, Int.MAX_VALUE)
+    configSelectedFeedbackSensor(device, 0, 0)
+    setSelectedSensorPosition(0, 0, 0)
 }
 
 /**
