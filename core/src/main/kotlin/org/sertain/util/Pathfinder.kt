@@ -127,7 +127,7 @@ public abstract class PathInitializer {
     public fun logGeneratedPoints() {
         println(
             """
-            |Generated ${trajectory.segments.size} points:
+            |Generated ${trajectory.segments.size} points for ${javaClass.simpleName}:
             ${trajectory.segments.reduce(50).joinToString("\n") { "${it.x}, ${it.y}" }}
             |""".trimMargin()
         )
