@@ -15,8 +15,37 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
+/** Sets the currently selected sensor. */
+public var Talon.selectedSensor: FeedbackDevice
+    get() = FeedbackDevice.QuadEncoder
+    set(value) {
+        configSelectedFeedbackSensor(value, 0, 0)
+    }
+
 /** Gets the encoder position of the currently selected sensor. */
 public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
+
+/**
+ * Gets the position of the specified [sensor].
+ *
+ * @param sensor the [FeedbackDevice] to get the position of
+ * @return the position of the [sensor]
+ */
+public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int {
+    configSelectedFeedbackSensor(sensor, 0, 0)
+    return getSelectedSensorPosition(0)
+}
+
+/**
+ * Gets the velocity of the specified [sensor].
+ *
+ * @param sensor the [FeedbackDevice] to get the velocity of
+ * @return the velocity of the [sensor]
+ */
+public fun Talon.getEncoderVelocity(sensor: FeedbackDevice): Int {
+    configSelectedFeedbackSensor(sensor, 0, 0)
+    return getSelectedSensorVelocity(0)
+}
 
 /**
  * Joins two [Talons][Talon] together by having the second follow the first.
