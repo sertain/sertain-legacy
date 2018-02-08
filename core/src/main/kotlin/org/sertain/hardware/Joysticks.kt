@@ -9,7 +9,8 @@ import org.sertain.command.Command
 import org.sertain.command.CommandBridge
 
 /** @return [Joystick.getThrottle], scaled to positive values (0..1) */
-public val Joystick.scaledThrottle get() = (throttle + 1) / 2
+// Minus because `throttle` is 1 when at the bottom...sigh WPI
+public val Joystick.scaledThrottle get() = (throttle - 1) / 2
 
 /**
  * @param button the number of the button to listen for
