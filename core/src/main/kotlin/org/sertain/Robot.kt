@@ -79,6 +79,10 @@ public interface RobotLifecycle {
         @VisibleForTesting
         internal val listeners = mutableSetOf<RobotLifecycle>()
 
+        internal fun rawAddListener(lifecycle: RobotLifecycle) {
+            listeners += lifecycle
+        }
+
         /**
          * Adds a listener for [RobotLifecycle] events.
          *
@@ -154,7 +158,7 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
 
     init {
         @Suppress("LeakingThis") // Invoked through reflection and initialized later
-        RobotLifecycle.addListener(this)
+        RobotLifecycle.rawAddListener(this)
     }
 
     override fun robotInit() = LifecycleDistributor.onCreate()
