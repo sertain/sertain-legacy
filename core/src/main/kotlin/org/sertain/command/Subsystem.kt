@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Subsystem as WpiLibSubsystem
 /** @see edu.wpi.first.wpilibj.command.Subsystem */
 public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle {
     /** @see edu.wpi.first.wpilibj.command.Subsystem.setDefaultCommand */
-    open val defaultCommand: CommandBridge? = null
+    open val defaultCommand: CommandBridgeMirror? = null
 
     override fun initSendable(builder: SendableBuilder?) {
         super.initSendable(builder)
