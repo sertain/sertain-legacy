@@ -2,11 +2,11 @@
 @file:JvmName("CommandUtils")
 package org.sertain.command
 
-import edu.wpi.first.wpilibj.command.Subsystem
 import java.util.concurrent.TimeUnit
 import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
 import edu.wpi.first.wpilibj.command.CommandGroup as WpiLibCommandGroup
 import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
+import edu.wpi.first.wpilibj.command.Subsystem as WpiLibSubsystem
 
 /** @see CommandGroup.addSequential */
 public infix fun CommandBridgeMirror.then(command: CommandBridgeMirror) =
@@ -34,7 +34,7 @@ public interface CommandBridge : Requirable {
     /** @see edu.wpi.first.wpilibj.command.Command.cancel */
     fun cancel()
 
-    /** @see edu.wpi.first.wpilibj.command.Command.requires */
+    /** @see edu.wpi.first.wpilibj.command.Command.initialize */
     fun onCreate() = Unit
 
     /** @see edu.wpi.first.wpilibj.command.Command.execute */
@@ -136,7 +136,7 @@ internal class CommandMirror(
         unit: TimeUnit
 ) : WpiLibCommand(unit.toSeconds(timeout).toDouble()) {
     @Suppress("RedundantOverride") // Needed for visibility override
-    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+    public override fun requires(subsystem: WpiLibSubsystem) = super.requires(subsystem)
 
     override fun initialize() = command.onCreate()
 
@@ -157,7 +157,7 @@ internal class PidCommandMirror(
     internal var pidOutput = 0.0
 
     @Suppress("RedundantOverride") // Needed for visibility override
-    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+    public override fun requires(subsystem: WpiLibSubsystem) = super.requires(subsystem)
 
     @Suppress("RedundantOverride") // Needed for visibility override
     public override fun setSetpoint(setpoint: Double) = super.setSetpoint(setpoint)
@@ -187,7 +187,7 @@ internal class PidCommandMirror(
 /** A mirror of WPILib's CommandGroup class. */
 internal class CommandGroupMirror(private val command: CommandGroup) : WpiLibCommandGroup() {
     @Suppress("RedundantOverride") // Needed for visibility override
-    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+    public override fun requires(subsystem: WpiLibSubsystem) = super.requires(subsystem)
 
     override fun initialize() = command.onCreate()
 
