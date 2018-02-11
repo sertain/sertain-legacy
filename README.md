@@ -44,6 +44,6 @@ And then add the dependency:
 
 ```groovy
 dependencies {
-    compile 'com.github.sertain:sertain:0.0.12'
+    compile 'com.github.sertain:sertain:0.0.13'
 }
 ```
