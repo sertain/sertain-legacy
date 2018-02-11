@@ -22,27 +22,12 @@ public infix fun CommandGroup.then(command: CommandBridgeMirror) = addSequential
 /** @see CommandGroup.addParallel */
 public infix fun CommandGroup.and(command: CommandBridgeMirror) = addParallel(command)
 
-/** @see CommandGroup.addSequential */
-@JvmOverloads
-public fun CommandGroup.addSequential(
-        command: CommandBridgeMirror,
-        timeout: Double? = null
-): CommandGroup {
-    if (timeout == null) addSequential(command.mirror) else addSequential(command.mirror, timeout)
-    return this
-}
-
-/** @see CommandGroup.addParallel */
-@JvmOverloads
-public fun CommandGroup.addParallel(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
-    if (timeout == null) addParallel(command.mirror) else addParallel(command.mirror, timeout)
-    return this
-}
-
-public interface CommandBridge {
+public interface Requirable {
     /** @see edu.wpi.first.wpilibj.command.Command.requires */
     fun requires(subsystem: Subsystem)
+}
 
+public interface CommandBridge : Requirable {
     /** @see edu.wpi.first.wpilibj.command.Command.start */
     fun start()
 
@@ -116,14 +101,40 @@ public abstract class PidCommand @JvmOverloads constructor(
     public abstract fun returnPidInput(): Double
 }
 
-public class CommandGroup : WpiLibCommandGroup()
+public class CommandGroup : CommandBridgeMirror() {
+    override val mirror = CommandGroupMirror(this)
+
+    override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
+
+    override fun execute() = false
+
+    /** @see edu.wpi.first.wpilibj.command.CommandGroup.addSequential */
+    public fun addSequential(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
+        if (timeout == null) {
+            mirror.addSequential(command.mirror)
+        } else {
+            mirror.addSequential(command.mirror, timeout)
+        }
+        return this
+    }
+
+    /** @see edu.wpi.first.wpilibj.command.CommandGroup.addParallel */
+    public fun addParallel(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
+        if (timeout == null) {
+            mirror.addParallel(command.mirror)
+        } else {
+            mirror.addParallel(command.mirror, timeout)
+        }
+        return this
+    }
+}
 
 /** A mirror of WPILib's Command class. */
 internal class CommandMirror(
         private val command: Command,
         timeout: Long,
         unit: TimeUnit
-) : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
+) : WpiLibCommand(unit.toSeconds(timeout).toDouble()) {
     @Suppress("RedundantOverride") // Needed for visibility override
     public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
 
@@ -142,7 +153,7 @@ internal class PidCommandMirror(
         p: Double,
         i: Double,
         d: Double
-) : WpiLibPidCommand(p, i, d), Requirable {
+) : WpiLibPidCommand(p, i, d) {
     internal var pidOutput = 0.0
 
     @Suppress("RedundantOverride") // Needed for visibility override
@@ -173,6 +184,14 @@ internal class PidCommandMirror(
     override fun execute() = Unit
 }
 
-private interface Requirable {
-    fun requires(subsystem: Subsystem)
+/** A mirror of WPILib's CommandGroup class. */
+internal class CommandGroupMirror(private val command: CommandGroup) : WpiLibCommandGroup() {
+    @Suppress("RedundantOverride") // Needed for visibility override
+    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+
+    override fun initialize() = command.onCreate()
+
+    override fun isFinished() = super.isFinished() || command.execute()
+
+    override fun end() = command.onDestroy()
 }
