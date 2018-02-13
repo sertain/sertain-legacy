@@ -107,30 +107,60 @@ public abstract class PidCommand @JvmOverloads constructor(
 
 public class CommandGroup : CommandBridgeMirror() {
     override val mirror = CommandGroupMirror(this)
+    private val entries = mutableListOf<Entry>()
 
     override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
+
+    override fun start() {
+        // Postfix last parallel commands into sequential ones
+        for ((index, entry) in entries.withIndex()) {
+            val prevIndex = index - 1
+            val prev = entries.getOrNull(prevIndex)
+            if (entry.sequential && prev?.sequential == false) {
+                entries[prevIndex] = prev.copy(sequential = true)
+            }
+        }
+
+        for (entry in entries) {
+            entry.apply {
+                if (sequential) {
+                    if (timeout == null) {
+                        mirror.addSequential(command.mirror)
+                    } else {
+                        mirror.addSequential(command.mirror, timeout)
+                    }
+                } else {
+                    if (timeout == null) {
+                        mirror.addParallel(command.mirror)
+                    } else {
+                        mirror.addParallel(command.mirror, timeout)
+                    }
+                }
+            }
+        }
+
+        super.start()
+    }
 
     override fun execute() = false
 
     /** @see edu.wpi.first.wpilibj.command.CommandGroup.addSequential */
     public fun addSequential(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
-        if (timeout == null) {
-            mirror.addSequential(command.mirror)
-        } else {
-            mirror.addSequential(command.mirror, timeout)
-        }
+        entries += Entry(true, command, timeout)
         return this
     }
 
     /** @see edu.wpi.first.wpilibj.command.CommandGroup.addParallel */
     public fun addParallel(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
-        if (timeout == null) {
-            mirror.addParallel(command.mirror)
-        } else {
-            mirror.addParallel(command.mirror, timeout)
-        }
+        entries += Entry(false, command, timeout)
         return this
     }
+
+    private data class Entry(
+            val sequential: Boolean,
+            val command: CommandBridgeMirror,
+            val timeout: Double?
+    )
 }
 
 /** A mirror of WPILib's Command class. */
