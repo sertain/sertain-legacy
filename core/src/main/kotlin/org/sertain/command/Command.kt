@@ -54,10 +54,14 @@ public abstract class CommandBridgeMirror : CommandBridge {
 
 /** @see edu.wpi.first.wpilibj.command.Command */
 public abstract class Command @JvmOverloads constructor(
-        timeout: Long = 0,
+        timeout: Long? = null,
         unit: TimeUnit = TimeUnit.MILLISECONDS
 ) : CommandBridgeMirror() {
-    override val mirror = CommandMirror(this, timeout, unit)
+    override val mirror = if (timeout == null) {
+        CommandMirror(this)
+    } else {
+        CommandMirror(this, timeout, unit)
+    }
 
     override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
 }
@@ -130,17 +134,24 @@ public class CommandGroup : CommandBridgeMirror() {
 }
 
 /** A mirror of WPILib's Command class. */
-internal class CommandMirror(
-        private val command: Command,
-        timeout: Long,
-        unit: TimeUnit
-) : WpiLibCommand(unit.toSeconds(timeout).toDouble()) {
+internal class CommandMirror : WpiLibCommand {
+    private val command: Command
+
+    constructor(command: Command) : super() {
+        this.command = command
+    }
+
+    constructor(command: Command, timeout: Long, unit: TimeUnit)
+            : super(unit.toSeconds(timeout).toDouble()) {
+        this.command = command
+    }
+
     @Suppress("RedundantOverride") // Needed for visibility override
     public override fun requires(subsystem: WpiLibSubsystem) = super.requires(subsystem)
 
     override fun initialize() = command.onCreate()
 
-    override fun isFinished(): Boolean = command.execute()
+    override fun isFinished(): Boolean = command.execute() || isTimedOut
 
     override fun end() = command.onDestroy()
 
