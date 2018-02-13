@@ -107,12 +107,12 @@ public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
 /**
  * Resets a given sensor to 0.
  *
- * @param device the device to reset, default is FeedbackDevice.QuadEncoder
+ * @param device the device to reset, default is the currently selected feedback sensor
  * @return the original Talon
  */
 @JvmOverloads
-public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncoder) = apply {
-    configSelectedFeedbackSensor(device, 0, 0)
+public fun Talon.resetEncoder(device: FeedbackDevice? = selectedSensors[deviceID]) = apply {
+    configSelectedFeedbackSensor(device ?: FeedbackDevice.QuadEncoder, 0, 0)
     setSelectedSensorPosition(0, 0, 0)
 }
 
