@@ -15,15 +15,26 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
+private var selectedSensors = mutableMapOf<Int, FeedbackDevice?>()
+
 /** Sets the currently selected sensor. */
-public var Talon.selectedSensor: FeedbackDevice
-    get() = FeedbackDevice.QuadEncoder
+public var Talon.selectedSensor: FeedbackDevice?
+    get() = selectedSensors[deviceID]
     set(value) {
         configSelectedFeedbackSensor(value, 0, 0)
+        selectedSensors[deviceID] = value
     }
 
 /** Gets the encoder position of the currently selected sensor. */
-public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
+public var Talon.encoderPosition: Int
+    get() = getSelectedSensorPosition(0)
+    set(value) {
+        setSelectedSensorPosition(value, 0, 0)
+    }
+
+/** Gets the encoder velocity of the currently selected sensor. */
+public val Talon.encoderVelocity: Int
+    get() = getSelectedSensorVelocity(0)
 
 /**
  * Gets the position of the specified [sensor].
@@ -32,8 +43,19 @@ public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
  * @return the position of the [sensor]
  */
 public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int {
-    configSelectedFeedbackSensor(sensor, 0, 0)
-    return getSelectedSensorPosition(0)
+    selectedSensor = sensor
+    return encoderPosition
+}
+
+/**
+ * Sets the position of the specified [sensor].
+ *
+ * @param sensor the [FeedbackDevice] to get the position of
+ * @param position the position to set the [sensor] to
+ */
+public fun Talon.setEncoderPosition(sensor: FeedbackDevice, position: Int) {
+    selectedSensor = sensor
+    encoderPosition = position
 }
 
 /**
@@ -43,8 +65,8 @@ public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int {
  * @return the velocity of the [sensor]
  */
 public fun Talon.getEncoderVelocity(sensor: FeedbackDevice): Int {
-    configSelectedFeedbackSensor(sensor, 0, 0)
-    return getSelectedSensorVelocity(0)
+    selectedSensor = sensor
+    return encoderVelocity
 }
 
 /**
