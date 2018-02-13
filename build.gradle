@@ -85,7 +85,7 @@ allprojects {
 
                 groupId "org.sert2521"
                 artifactId project.name
-                version "0.0.15"
+                version "0.0.16"
 
                 artifact "$buildDir/libs/${project.name}.jar"
                 artifact sourcesJar
