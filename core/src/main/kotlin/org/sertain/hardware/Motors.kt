@@ -25,6 +25,7 @@ public var Talon.encoderPosition: Int
 /** Gets the encoder velocity of the currently selected sensor. */
 public val Talon.encoderVelocity: Int get() = getSelectedSensorVelocity(0)
 
+/** Sets the currently selected sensor. */
 public fun Talon.setSelectedSensor(sensor: FeedbackDevice) {
     configSelectedFeedbackSensor(sensor, 0, 0)
 }
