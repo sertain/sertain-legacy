@@ -16,8 +16,9 @@ import kotlin.concurrent.schedule
 public typealias Talon = WPI_TalonSRX
 
 /** Sets the currently selected sensor. */
-public fun Talon.setSelectedSensor(sensor: FeedbackDevice) {
-    configSelectedFeedbackSensor(sensor, 0, 0)
+@JvmOverloads
+public fun Talon.setSelectedSensor(sensor: FeedbackDevice, timeoutMillis: Int = 1000) {
+    configSelectedFeedbackSensor(sensor, sensor.value, timeoutMillis)
 }
 
 /**
@@ -39,9 +40,10 @@ public fun Talon.getEncoderPosition(sensor: FeedbackDevice = FeedbackDevice.Quad
 @JvmOverloads
 public fun Talon.setEncoderPosition(
         position: Int,
-        sensor: FeedbackDevice = FeedbackDevice.QuadEncoder
+        sensor: FeedbackDevice = FeedbackDevice.QuadEncoder,
+        timeoutMillis: Int = 0
 ) {
-    setSelectedSensorPosition(position, sensor.value, 0)
+    setSelectedSensorPosition(position, sensor.value, timeoutMillis)
 }
 
 /**
