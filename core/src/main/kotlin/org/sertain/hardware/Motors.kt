@@ -15,14 +15,12 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
-private var selectedSensors = mutableMapOf<Int, FeedbackDevice?>()
-
 /** Sets the currently selected sensor. */
-public var Talon.selectedSensor: FeedbackDevice?
-    get() = selectedSensors[deviceID]
+@get:Deprecated("Unsupported", level = DeprecationLevel.HIDDEN)
+public var Talon.selectedSensor: FeedbackDevice
+    get() = throw UnsupportedOperationException()
     set(value) {
         configSelectedFeedbackSensor(value, 0, 0)
-        selectedSensors[deviceID] = value
     }
 
 /** Gets the encoder position of the currently selected sensor. */
@@ -33,8 +31,7 @@ public var Talon.encoderPosition: Int
     }
 
 /** Gets the encoder velocity of the currently selected sensor. */
-public val Talon.encoderVelocity: Int
-    get() = getSelectedSensorVelocity(0)
+public val Talon.encoderVelocity: Int get() = getSelectedSensorVelocity(0)
 
 /**
  * Gets the position of the specified [sensor].
@@ -42,10 +39,8 @@ public val Talon.encoderVelocity: Int
  * @param sensor the [FeedbackDevice] to get the position of
  * @return the position of the [sensor]
  */
-public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int {
-    selectedSensor = sensor
-    return encoderPosition
-}
+public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int =
+        getSelectedSensorPosition(sensor.value)
 
 /**
  * Sets the position of the specified [sensor].
@@ -54,8 +49,7 @@ public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int {
  * @param position the position to set the [sensor] to
  */
 public fun Talon.setEncoderPosition(sensor: FeedbackDevice, position: Int) {
-    selectedSensor = sensor
-    encoderPosition = position
+    setSelectedSensorPosition(position, sensor.value, 0)
 }
 
 /**
@@ -64,10 +58,8 @@ public fun Talon.setEncoderPosition(sensor: FeedbackDevice, position: Int) {
  * @param sensor the [FeedbackDevice] to get the velocity of
  * @return the velocity of the [sensor]
  */
-public fun Talon.getEncoderVelocity(sensor: FeedbackDevice): Int {
-    selectedSensor = sensor
-    return encoderVelocity
-}
+public fun Talon.getEncoderVelocity(sensor: FeedbackDevice): Int =
+        getSelectedSensorVelocity(sensor.value)
 
 /**
  * Joins two [Talons][Talon] together by having the second follow the first.
@@ -111,9 +103,9 @@ public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
  * @return the original Talon
  */
 @JvmOverloads
-public fun Talon.resetEncoder(device: FeedbackDevice? = selectedSensors[deviceID]) = apply {
-    configSelectedFeedbackSensor(device ?: FeedbackDevice.QuadEncoder, 0, 0)
-    setSelectedSensorPosition(0, 0, 0)
+public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncoder) = apply {
+    configSelectedFeedbackSensor(device, 0, 0)
+    encoderPosition = 0
 }
 
 /**
