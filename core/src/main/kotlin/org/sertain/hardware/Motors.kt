@@ -15,16 +15,6 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
-/** Gets the encoder position of the currently selected sensor. */
-public var Talon.encoderPosition: Int
-    get() = getSelectedSensorPosition(0)
-    set(value) {
-        setSelectedSensorPosition(value, 0, 0)
-    }
-
-/** Gets the encoder velocity of the currently selected sensor. */
-public val Talon.encoderVelocity: Int get() = getSelectedSensorVelocity(0)
-
 /** Sets the currently selected sensor. */
 public fun Talon.setSelectedSensor(sensor: FeedbackDevice) {
     configSelectedFeedbackSensor(sensor, 0, 0)
@@ -36,7 +26,8 @@ public fun Talon.setSelectedSensor(sensor: FeedbackDevice) {
  * @param sensor the [FeedbackDevice] to get the position of
  * @return the position of the [sensor]
  */
-public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int =
+@JvmOverloads
+public fun Talon.getEncoderPosition(sensor: FeedbackDevice = FeedbackDevice.QuadEncoder): Int =
         getSelectedSensorPosition(sensor.value)
 
 /**
@@ -45,7 +36,11 @@ public fun Talon.getEncoderPosition(sensor: FeedbackDevice): Int =
  * @param sensor the [FeedbackDevice] to get the position of
  * @param position the position to set the [sensor] to
  */
-public fun Talon.setEncoderPosition(sensor: FeedbackDevice, position: Int) {
+@JvmOverloads
+public fun Talon.setEncoderPosition(
+        position: Int,
+        sensor: FeedbackDevice = FeedbackDevice.QuadEncoder
+) {
     setSelectedSensorPosition(position, sensor.value, 0)
 }
 
@@ -55,7 +50,8 @@ public fun Talon.setEncoderPosition(sensor: FeedbackDevice, position: Int) {
  * @param sensor the [FeedbackDevice] to get the velocity of
  * @return the velocity of the [sensor]
  */
-public fun Talon.getEncoderVelocity(sensor: FeedbackDevice): Int =
+@JvmOverloads
+public fun Talon.getEncoderVelocity(sensor: FeedbackDevice = FeedbackDevice.QuadEncoder): Int =
         getSelectedSensorVelocity(sensor.value)
 
 /**
