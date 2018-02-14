@@ -15,14 +15,6 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
-/** Sets the currently selected sensor. */
-@get:Deprecated("Unsupported", level = DeprecationLevel.HIDDEN)
-public var Talon.selectedSensor: FeedbackDevice
-    get() = throw UnsupportedOperationException()
-    set(value) {
-        configSelectedFeedbackSensor(value, 0, 0)
-    }
-
 /** Gets the encoder position of the currently selected sensor. */
 public var Talon.encoderPosition: Int
     get() = getSelectedSensorPosition(0)
@@ -32,6 +24,10 @@ public var Talon.encoderPosition: Int
 
 /** Gets the encoder velocity of the currently selected sensor. */
 public val Talon.encoderVelocity: Int get() = getSelectedSensorVelocity(0)
+
+public fun Talon.setSelectedSensor(sensor: FeedbackDevice) {
+    configSelectedFeedbackSensor(sensor, 0, 0)
+}
 
 /**
  * Gets the position of the specified [sensor].
@@ -95,18 +91,6 @@ public fun Talon.autoBreak() = apply { BreakWhenStarted += this }
  * @see BreakWhenStarted
  */
 public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
-
-/**
- * Resets a given sensor to 0.
- *
- * @param device the device to reset, default is the currently selected feedback sensor
- * @return the original Talon
- */
-@JvmOverloads
-public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncoder) = apply {
-    configSelectedFeedbackSensor(device, 0, 0)
-    encoderPosition = 0
-}
 
 /**
  * Sets whether the Talon should be inverted.
