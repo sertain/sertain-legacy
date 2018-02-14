@@ -15,8 +15,46 @@ import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
 
-/** Gets the encoder position of the currently selected sensor. */
-public val Talon.encoderPosition: Int get() = getSelectedSensorPosition(0)
+/** Sets the currently selected sensor. */
+@JvmOverloads
+public fun Talon.setSelectedSensor(sensor: FeedbackDevice, timeoutMillis: Int = 1000) {
+    configSelectedFeedbackSensor(sensor, sensor.value, timeoutMillis)
+}
+
+/**
+ * Gets the position of the specified [sensor].
+ *
+ * @param sensor the [FeedbackDevice] to get the position of
+ * @return the position of the [sensor]
+ */
+@JvmOverloads
+public fun Talon.getEncoderPosition(sensor: FeedbackDevice = FeedbackDevice.QuadEncoder): Int =
+        getSelectedSensorPosition(sensor.value)
+
+/**
+ * Sets the position of the specified [sensor].
+ *
+ * @param sensor the [FeedbackDevice] to get the position of
+ * @param position the position to set the [sensor] to
+ */
+@JvmOverloads
+public fun Talon.setEncoderPosition(
+        position: Int,
+        sensor: FeedbackDevice = FeedbackDevice.QuadEncoder,
+        timeoutMillis: Int = 0
+) {
+    setSelectedSensorPosition(position, sensor.value, timeoutMillis)
+}
+
+/**
+ * Gets the velocity of the specified [sensor].
+ *
+ * @param sensor the [FeedbackDevice] to get the velocity of
+ * @return the velocity of the [sensor]
+ */
+@JvmOverloads
+public fun Talon.getEncoderVelocity(sensor: FeedbackDevice = FeedbackDevice.QuadEncoder): Int =
+        getSelectedSensorVelocity(sensor.value)
 
 /**
  * Joins two [Talons][Talon] together by having the second follow the first.
@@ -52,18 +90,6 @@ public fun Talon.autoBreak() = apply { BreakWhenStarted += this }
  * @see BreakWhenStarted
  */
 public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
-
-/**
- * Resets a given sensor to 0.
- *
- * @param device the device to reset, default is FeedbackDevice.QuadEncoder
- * @return the original Talon
- */
-@JvmOverloads
-public fun Talon.resetEncoder(device: FeedbackDevice = FeedbackDevice.QuadEncoder) = apply {
-    configSelectedFeedbackSensor(device, 0, Int.MAX_VALUE)
-    setSelectedSensorPosition(0, 0, Int.MAX_VALUE)
-}
 
 /**
  * Sets whether the Talon should be inverted.
