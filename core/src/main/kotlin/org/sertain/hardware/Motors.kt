@@ -2,6 +2,7 @@
 @file:JvmName("Motors")
 package org.sertain.hardware
 
+import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
@@ -10,10 +11,37 @@ import org.sertain.hardware.BreakWhenStarted.minusAssign
 import org.sertain.hardware.BreakWhenStarted.plusAssign
 import java.util.Timer
 import java.util.TimerTask
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 
 public typealias Talon = WPI_TalonSRX
+
+private val globalFollowers = ConcurrentHashMap<Talon, MutableList<Talon>>()
+
+public val Talon.followers get() = globalFollowers[this] ?: emptyList<Talon>()
+
+/**
+ * Joins two [Talons][Talon] together by having the second follow the first.
+ *
+ * @param other the Talon which should follow this one
+ * @return the original Talon
+ */
+public operator fun Talon.plus(other: Talon) = apply {
+    other.follow(this)
+    globalFollowers[this] = globalFollowers[this]?.apply { add(other) } ?: mutableListOf(other)
+}
+
+/**
+ * Disjoins two [Talons][Talon] by having the second unfollow the first.
+ *
+ * @param other the Talon which should unfollow this one
+ * @return the original Talon
+ */
+public operator fun Talon.minus(other: Talon) = apply {
+    other.set(ControlMode.PercentOutput, 0.0)
+    globalFollowers[this]?.remove(other)
+}
 
 /** Sets the currently selected sensor. */
 @JvmOverloads
@@ -55,14 +83,6 @@ public fun Talon.setEncoderPosition(
 @JvmOverloads
 public fun Talon.getEncoderVelocity(sensor: FeedbackDevice = FeedbackDevice.QuadEncoder): Int =
         getSelectedSensorVelocity(sensor.value)
-
-/**
- * Joins two [Talons][Talon] together by having the second follow the first.
- *
- * @param other the Talon which should follow this one
- * @return the original Talon
- */
-public operator fun Talon.plus(other: Talon) = apply { other.follow(this) }
 
 /**
  * Sets the [Talon]'s current mode between either Brake or Coast.
