@@ -140,12 +140,6 @@ public class CommandGroup : CommandBridgeMirror() {
                     if (prev.parallel) continue // Wait until we reach the first sequential entry
 
                     val start = prevIndex - trace
-
-                    if (start == prevIndex) {
-                        error("Invalid command sequence: " +
-                                      "parallel commands must have at least one other accomplice.")
-                    }
-
                     val parallels = entries.slice(start..prevIndex)
                     entries.removeAll(parallels)
                     entries.add(start, Entry(true, CommandGroup().apply {
