@@ -132,8 +132,8 @@ public class CommandGroup : CommandBridgeMirror() {
 
     private fun addQueuedCommands() {
         // Postfix parallel commands into command groups
-        for ((index, entry) in entries.toList().withIndex()) {
-            val prevIndex = index - 1
+        for (entry in entries.toList()) {
+            val prevIndex = entries.indexOf(entry) - 1
             if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true) {
                 // Walk back up the stack to find all linear parallel commands
                 for ((trace, prev) in entries.slice(0..prevIndex).reversed().withIndex()) {
