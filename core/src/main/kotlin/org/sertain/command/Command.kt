@@ -131,12 +131,29 @@ public class CommandGroup : CommandBridgeMirror() {
     }
 
     private fun addQueuedCommands() {
-        // Postfix last parallel commands into sequential ones
-        for ((index, entry) in entries.withIndex()) {
+        // Postfix parallel commands into command groups
+        for ((index, entry) in entries.toList().withIndex()) {
             val prevIndex = index - 1
-            val prev = entries.getOrNull(prevIndex)
-            if (entry.sequential && prev?.sequential == false) {
-                entries[prevIndex] = prev.copy(sequential = true)
+            if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true) {
+                // Walk back up the stack to find all linear parallel commands
+                for ((trace, prev) in entries.slice(0..prevIndex).reversed().withIndex()) {
+                    if (prev.parallel) continue // Wait until we reach the first sequential entry
+
+                    val start = prevIndex - trace
+
+                    if (start == prevIndex) {
+                        error("Invalid command sequence: " +
+                                      "parallel commands must have at least one other accomplice.")
+                    }
+
+                    val parallels = entries.slice(start..prevIndex)
+                    entries.removeAll(parallels)
+                    entries.add(start, Entry(true, CommandGroup().apply {
+                        for ((_, command, timeout) in parallels) addParallel(command, timeout)
+                    }))
+
+                    break
+                }
             }
         }
 
@@ -160,10 +177,12 @@ public class CommandGroup : CommandBridgeMirror() {
         }
     }
 
+    private inline val Entry.parallel get() = !sequential
+
     private data class Entry(
             val sequential: Boolean,
             val command: CommandBridgeMirror,
-            val timeout: Double?
+            val timeout: Double? = null
     )
 }
 
