@@ -112,33 +112,7 @@ public class CommandGroup : CommandBridgeMirror() {
     override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
 
     override fun start() {
-        // Postfix last parallel commands into sequential ones
-        for ((index, entry) in entries.withIndex()) {
-            val prevIndex = index - 1
-            val prev = entries.getOrNull(prevIndex)
-            if (entry.sequential && prev?.sequential == false) {
-                entries[prevIndex] = prev.copy(sequential = true)
-            }
-        }
-
-        for (entry in entries) {
-            entry.apply {
-                if (sequential) {
-                    if (timeout == null) {
-                        mirror.addSequential(command.mirror)
-                    } else {
-                        mirror.addSequential(command.mirror, timeout)
-                    }
-                } else {
-                    if (timeout == null) {
-                        mirror.addParallel(command.mirror)
-                    } else {
-                        mirror.addParallel(command.mirror, timeout)
-                    }
-                }
-            }
-        }
-
+        addQueuedCommands()
         super.start()
     }
 
@@ -154,6 +128,36 @@ public class CommandGroup : CommandBridgeMirror() {
     public fun addParallel(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
         entries += Entry(false, command, timeout)
         return this
+    }
+
+    private fun addQueuedCommands() {
+        // Postfix last parallel commands into sequential ones
+        for ((index, entry) in entries.withIndex()) {
+            val prevIndex = index - 1
+            val prev = entries.getOrNull(prevIndex)
+            if (entry.sequential && prev?.sequential == false) {
+                entries[prevIndex] = prev.copy(sequential = true)
+            }
+        }
+
+        for (entry in entries) {
+            entry.apply {
+                (command as? CommandGroup)?.addQueuedCommands()
+                if (sequential) {
+                    if (timeout == null) {
+                        mirror.addSequential(command.mirror)
+                    } else {
+                        mirror.addSequential(command.mirror, timeout)
+                    }
+                } else {
+                    if (timeout == null) {
+                        mirror.addParallel(command.mirror)
+                    } else {
+                        mirror.addParallel(command.mirror, timeout)
+                    }
+                }
+            }
+        }
     }
 
     private data class Entry(
