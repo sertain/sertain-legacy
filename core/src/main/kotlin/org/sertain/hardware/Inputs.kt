@@ -4,9 +4,10 @@ package org.sertain.hardware
 
 import edu.wpi.first.wpilibj.DigitalInput as WpiLibDigitalInput
 
-class DigitalInput @JvmOverloads constructor(
-        channel: Int,
-        private val inverted: Boolean = false
-) : WpiLibDigitalInput(channel) {
+class DigitalInput constructor(channel: Int) : WpiLibDigitalInput(channel) {
+    private var inverted = false
+
     override fun get() = if (inverted) !super.get() else super.get()
+
+    fun invert(inverted: Boolean = true) = apply { this.inverted = inverted }
 }
