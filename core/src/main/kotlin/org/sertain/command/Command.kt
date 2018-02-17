@@ -137,7 +137,8 @@ public class CommandGroup : CommandBridgeMirror() {
             if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true) {
                 // Walk back up the stack to find all linear parallel commands
                 for ((trace, prev) in entries.slice(0..prevIndex).reversed().withIndex()) {
-                    if (prev.parallel) continue // Wait until we reach the first sequential entry
+                    // Wait until we reach the first sequential entry
+                    if (prev.parallel && trace != prevIndex) continue
 
                     val start = prevIndex - trace
                     val parallels = entries.slice(start..prevIndex)
