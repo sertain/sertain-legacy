@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
+import edu.wpi.first.wpilibj.PWMSpeedController
 import org.sertain.RobotLifecycle
 import org.sertain.hardware.BreakWhenStarted.minusAssign
 import org.sertain.hardware.BreakWhenStarted.plusAssign
@@ -126,6 +127,15 @@ public fun Talon.invert(inverted: Boolean = true) = apply { this.inverted = inve
  * @return the original Talon
  */
 public fun Talon.stop() = apply { stopMotor() }
+
+/**
+ * Sets whether the controller should be inverted or not.
+ *
+ * @param inverted whether the controller should be inverted
+ * @return the original controller
+ */
+@JvmOverloads
+public fun PWMSpeedController.invert(inverted: Boolean = true) = apply { setInverted(inverted) }
 
 /**
  * Puts all specified talons in break mode when the robot is enabled in either teleop or autonomous
