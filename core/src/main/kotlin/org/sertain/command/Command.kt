@@ -129,23 +129,29 @@ public class CommandGroup : CommandBridgeMirror() {
     }
 
     private fun addQueuedCommands() {
-        // Postfix parallel commands into command groups
-        for (entry in entries.toList()) {
-            val prevIndex = entries.indexOf(entry) - 1
-            if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true) {
-                // Walk back up the stack to find all linear parallel commands
-                for ((trace, prev) in entries.slice(0..prevIndex).reversed().withIndex()) {
-                    // Wait until we reach the first sequential entry
-                    if (prev.parallel && trace != prevIndex) continue
+        // Only postfix parallel commands into command groups if necessary.
+        // Also avoids infinite recursion with postfixed nested command groups.
+        if (!(entries.all { it.parallel } || entries.all { it.sequential })) {
+            for (entry in entries.toList()) {
+                val prevIndex = entries.indexOf(entry) - 1
+                val isLast = entries.last() === entry
+                if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true
+                        || entry.parallel && isLast) {
+                    val endIndex = prevIndex + if (isLast) 1 else 0
+                    // Walk back up the stack to find all linear parallel commands
+                    for ((trace, prev) in entries.slice(0..endIndex).reversed().withIndex()) {
+                        // Wait until we reach the first sequential entry
+                        if (prev.parallel && trace != endIndex) continue
 
-                    val start = prevIndex - trace
-                    val parallels = entries.slice(start..prevIndex)
-                    entries.removeAll(parallels)
-                    entries.add(start, Entry(true, CommandGroup().apply {
-                        for ((_, command, timeout) in parallels) addParallel(command, timeout)
-                    }))
+                        val start = endIndex - trace
+                        val parallels = entries.slice(start..endIndex)
+                        entries.removeAll(parallels)
+                        entries.add(start, Entry(true, CommandGroup().apply {
+                            for ((_, command, timeout) in parallels) addParallel(command, timeout)
+                        }))
 
-                    break
+                        break
+                    }
                 }
             }
         }
