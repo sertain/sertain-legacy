@@ -2,7 +2,6 @@
 @file:JvmName("CommandUtils")
 package org.sertain.command
 
-import java.util.concurrent.TimeUnit
 import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
 import edu.wpi.first.wpilibj.command.CommandGroup as WpiLibCommandGroup
 import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
@@ -54,13 +53,12 @@ public abstract class CommandBridgeMirror : CommandBridge {
 
 /** @see edu.wpi.first.wpilibj.command.Command */
 public abstract class Command @JvmOverloads constructor(
-        timeout: Long? = null,
-        unit: TimeUnit = TimeUnit.MILLISECONDS
+        timeoutMillis: Long? = null
 ) : CommandBridgeMirror() {
-    override val mirror = if (timeout == null) {
+    override val mirror = if (timeoutMillis == null || timeoutMillis <= 0) {
         CommandMirror(this)
     } else {
-        CommandMirror(this, timeout, unit)
+        CommandMirror(this, timeoutMillis)
     }
 
     override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
@@ -189,8 +187,7 @@ internal class CommandMirror : WpiLibCommand {
         this.command = command
     }
 
-    constructor(command: Command, timeout: Long, unit: TimeUnit)
-            : super(unit.toSeconds(timeout).toDouble()) {
+    constructor(command: Command, timeoutMillis: Long) : super(timeoutMillis / 1000.0) {
         this.command = command
     }
 
