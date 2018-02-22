@@ -44,6 +44,6 @@ And then add the dependency:
 
 ```groovy
 dependencies {
-    compile 'org.sert2521.sertain:core:0.0.26'
+    compile 'org.sert2521.sertain:core:1.0.0'
 }
 ```
