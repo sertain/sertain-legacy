@@ -1,10 +1,11 @@
 package org.sertain
 
-import org.fest.assertions.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.sertain.RobotLifecycle.Companion.listeners
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class RobotTest {
     private val testLifecycle = object : RobotLifecycle {}
@@ -21,13 +22,13 @@ class RobotTest {
 
     @Test
     fun `should contain lifecycle when added`() {
-        assertThat(listeners).contains(testLifecycle)
+        assertTrue(listeners.contains(testLifecycle))
     }
 
     @Test
     fun `should not contain lifecycle when removed`() {
         RobotLifecycle.removeListener(testLifecycle)
 
-        assertThat(listeners).isEmpty()
+        assertFalse(listeners.contains(testLifecycle))
     }
 }

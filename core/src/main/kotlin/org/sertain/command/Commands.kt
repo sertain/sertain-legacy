@@ -2,6 +2,7 @@
 @file:JvmName("CommandUtils")
 package org.sertain.command
 
+import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
 import edu.wpi.first.wpilibj.command.CommandGroup as WpiLibCommandGroup
 import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
@@ -105,7 +106,8 @@ public abstract class PidCommand @JvmOverloads constructor(
 
 public class CommandGroup : CommandBridgeMirror() {
     override val mirror = CommandGroupMirror(this)
-    private val entries = mutableListOf<Entry>()
+    @VisibleForTesting
+    internal val entries = mutableListOf<Entry>()
 
     override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
 
@@ -129,33 +131,7 @@ public class CommandGroup : CommandBridgeMirror() {
     }
 
     private fun addQueuedCommands() {
-        // Only postfix parallel commands into command groups if necessary.
-        // Also avoids infinite recursion with postfixed nested command groups.
-        if (!(entries.all { it.parallel } || entries.all { it.sequential })) {
-            for (entry in entries.toList()) {
-                val prevIndex = entries.indexOf(entry) - 1
-                val isLast = entries.last() === entry
-                if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true
-                        || entry.parallel && isLast) {
-                    val endIndex = prevIndex + if (isLast) 1 else 0
-                    // Walk back up the stack to find all linear parallel commands
-                    for ((trace, prev) in entries.slice(0..endIndex).reversed().withIndex()) {
-                        // Wait until we reach the first sequential entry
-                        if (prev.parallel && trace != endIndex) continue
-
-                        val start = endIndex - trace
-                        val parallels = entries.slice(start..endIndex)
-                        entries.removeAll(parallels)
-                        entries.add(start, Entry(true, CommandGroup().apply {
-                            for ((_, command, timeout) in parallels) addParallel(command, timeout)
-                        }))
-
-                        break
-                    }
-                }
-            }
-        }
-
+        postfixQueuedCommands()
         for (entry in entries) {
             entry.apply {
                 (command as? CommandGroup)?.addQueuedCommands()
@@ -176,13 +152,43 @@ public class CommandGroup : CommandBridgeMirror() {
         }
     }
 
-    private inline val Entry.parallel get() = !sequential
+    @VisibleForTesting
+    internal fun postfixQueuedCommands() {
+        // Avoid infinite recursion with postfixed nested command groups.
+        if (entries.all { it.parallel } || entries.all { it.sequential }) return
 
-    private data class Entry(
+        for (entry in entries.toList()) {
+            val prevIndex = entries.indexOf(entry) - 1
+            val isLastParallel = entries.last() === entry && entry.parallel
+            if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true
+                    || isLastParallel) {
+                val endIndex = prevIndex + if (isLastParallel) 1 else 0
+                // Walk back up the stack to find all linear parallel commands
+                for ((trace, prev) in entries.slice(0..endIndex).reversed().withIndex()) {
+                    // Wait until we reach the first sequential entry
+                    if (prev.parallel && trace != endIndex) continue
+
+                    val start = endIndex - trace
+                    val parallels = entries.slice(start..endIndex)
+                    entries.removeAll(parallels)
+                    entries.add(start, Entry(true, CommandGroup().apply {
+                        for ((_, command, timeout) in parallels) addParallel(command, timeout)
+                    }))
+
+                    break
+                }
+            }
+        }
+    }
+
+    @VisibleForTesting
+    internal data class Entry(
             val sequential: Boolean,
             val command: CommandBridgeMirror,
             val timeout: Double? = null
-    )
+    ) {
+        inline val parallel get() = !sequential
+    }
 }
 
 /** A mirror of WPILib's Command class. */

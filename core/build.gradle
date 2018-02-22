@@ -10,7 +10,7 @@ dependencies {
 
     ktlint 'com.github.shyiko:ktlint:0.14.0'
 
-    testCompile 'org.easytesting:fest-assert:1.4'
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     testCompile 'junit:junit:4.12'
 }
 
