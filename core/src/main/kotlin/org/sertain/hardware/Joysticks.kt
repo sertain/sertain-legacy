@@ -12,6 +12,15 @@ import org.sertain.command.CommandBridgeMirror
 // Minus because `throttle` is 1 when at the bottom...sigh WPI
 public val Joystick.scaledThrottle get() = (throttle - 1) / 2
 
+/** @return currently pressed POV button or null if unknown */
+public val GenericHID.povButton get() = PovButton.values().find { isPovButtonPressed(it) }
+
+/**
+ * @param button the POV button
+ * @return true if the POV button is pressed, false otherwise
+ */
+public fun GenericHID.isPovButtonPressed(button: PovButton) = pov == button.angle
+
 /**
  * @param button the number of the button to listen for
  * @param command the command to execute
@@ -45,3 +54,16 @@ public inline fun GenericHID.whileActive(
 ) = whileActive(button, object : Command() {
     override fun execute() = block()
 })
+
+/** Represents the most common POV buttons. */
+public enum class PovButton(val angle: Int) {
+    CENTER(-1),
+    TOP(0),
+    TOP_RIGHT(45),
+    RIGHT(90),
+    BOTTOM_RIGHT(135),
+    BOTTOM(180),
+    BOTTOM_LEFT(225),
+    LEFT(270),
+    TOP_LEFT(315)
+}
