@@ -105,16 +105,14 @@ public abstract class PidCommand @JvmOverloads constructor(
 }
 
 public class CommandGroup : CommandBridgeMirror() {
-    override val mirror = CommandGroupMirror(this)
+    private val _mirror by lazy {
+        CommandGroupMirror(this).apply { addQueuedCommands() }
+    }
+    override val mirror get() = _mirror
     @VisibleForTesting
     internal val entries = mutableListOf<Entry>()
 
     override fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
-
-    override fun start() {
-        addQueuedCommands()
-        super.start()
-    }
 
     override fun execute() = false
 
