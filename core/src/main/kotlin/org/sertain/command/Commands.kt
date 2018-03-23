@@ -105,10 +105,11 @@ public abstract class PidCommand @JvmOverloads constructor(
 }
 
 public class CommandGroup : CommandBridgeMirror() {
-    private val _mirror by lazy {
-        CommandGroupMirror(this).apply { addQueuedCommands() }
+    private val _mirror = CommandGroupMirror(this)
+    override val mirror by lazy {
+        addQueuedCommands()
+        _mirror
     }
-    override val mirror get() = _mirror
     @VisibleForTesting
     internal val entries = mutableListOf<Entry>()
 
@@ -130,21 +131,18 @@ public class CommandGroup : CommandBridgeMirror() {
 
     private fun addQueuedCommands() {
         postfixQueuedCommands()
-        for (entry in entries) {
-            entry.apply {
-                (command as? CommandGroup)?.addQueuedCommands()
-                if (sequential) {
-                    if (timeout == null) {
-                        mirror.addSequential(command.mirror)
-                    } else {
-                        mirror.addSequential(command.mirror, timeout)
-                    }
+        for ((sequential, command, timeout) in entries) {
+            if (sequential) {
+                if (timeout == null) {
+                    _mirror.addSequential(command.mirror)
                 } else {
-                    if (timeout == null) {
-                        mirror.addParallel(command.mirror)
-                    } else {
-                        mirror.addParallel(command.mirror, timeout)
-                    }
+                    _mirror.addSequential(command.mirror, timeout)
+                }
+            } else {
+                if (timeout == null) {
+                    _mirror.addParallel(command.mirror)
+                } else {
+                    _mirror.addParallel(command.mirror, timeout)
                 }
             }
         }
