@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '1.2.21'
+    ext.kotlinVersion = '1.2.30'
 
     repositories {
         google()
@@ -85,7 +85,7 @@ allprojects {
 
                 groupId "org.sert2521"
                 artifactId project.name
-                version "1.1.1"
+                version "1.1.2"
 
                 artifact "$buildDir/libs/${project.name}.jar"
                 artifact sourcesJar
