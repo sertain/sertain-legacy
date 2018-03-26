@@ -48,7 +48,7 @@ public abstract class CommandBridgeMirror : CommandBridge {
     internal abstract val mirror: WpiLibCommand
 
     val isRunning get() = mirror.isRunning
-    val isCancelled get() = mirror.isCanceled
+    val isCanceled get() = mirror.isCanceled
     val isCompleted get() = mirror.isCompleted
 
     override fun start() = mirror.start()
