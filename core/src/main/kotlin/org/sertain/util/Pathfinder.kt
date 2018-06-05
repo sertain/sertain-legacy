@@ -38,7 +38,7 @@ public fun TrajectoryConfig(
         maxJerk: Double,
         fit: Trajectory.FitMethod = Trajectory.FitMethod.HERMITE_CUBIC,
         samples: Int = Trajectory.Config.SAMPLES_HIGH,
-        ticks: Double = 0.05 // 20 millis
+        ticks: Double = 0.02 // 20 milliseconds
 ): Trajectory.Config = Trajectory.Config(
         fit,
         samples,
