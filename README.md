@@ -47,3 +47,9 @@ dependencies {
     compile 'org.sert2521.sertain:core:1.2.0'
 }
 ```
+
+## Documentation
+
+Checkout the [documentation](https://sertain.github.io/javadocs/) for information on how to use
+Sertain on your robot, and for a complete list of features. The javadocs are automatically
+generated after each push to master.
