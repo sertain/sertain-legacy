@@ -41,10 +41,23 @@ public abstract class Command @JvmOverloads constructor(
         timeout: Long = 0,
         unit: TimeUnit = TimeUnit.MILLISECONDS
 ) {
-    internal val mirror = CommandMirror(this, timeout, unit)
+    /** A mirror of WPILib's Command class. */
+    internal val mirror: WpiLibCommand = object : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
+        public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
+
+        override fun initialize() = this@Command.onCreate()
+
+        override fun isFinished(): Boolean = this@Command.execute()
+
+        override fun end() = this@Command.onDestroy()
+
+        override fun execute() = Unit
+    }
 
     /** @see edu.wpi.first.wpilibj.command.Command.requires */
-    public fun requires(subsystem: Subsystem) = mirror.requires(subsystem)
+    public fun requires(subsystem: Subsystem) {
+        mirror.apply { requires(subsystem) }
+    }
 
     /** @see edu.wpi.first.wpilibj.command.Command.start */
     public fun start() = mirror.start()
@@ -64,22 +77,4 @@ public abstract class Command @JvmOverloads constructor(
 
 private interface Requirable {
     fun requires(subsystem: Subsystem)
-}
-
-/** A mirror of WPILib's Command class. */
-internal class CommandMirror(
-        private val command: Command,
-        timeout: Long,
-        unit: TimeUnit
-) : WpiLibCommand(unit.toSeconds(timeout).toDouble()), Requirable {
-    @Suppress("RedundantOverride") // Needed for visibility override
-    public override fun requires(subsystem: Subsystem) = super.requires(subsystem)
-
-    override fun initialize() = command.onCreate()
-
-    override fun isFinished(): Boolean = command.execute()
-
-    override fun end() = command.onDestroy()
-
-    override fun execute() = Unit
 }
