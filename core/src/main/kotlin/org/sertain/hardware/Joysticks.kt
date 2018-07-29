@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.buttons.JoystickButton
 import org.sertain.command.Command
-import org.sertain.command.CommandBridgeMirror
+import org.sertain.command.CommandBase
 
 /** @return [Joystick.getThrottle], scaled to positive values (0..1) */
 // Minus because `throttle` is 1 when at the bottom...sigh WPI
@@ -26,7 +26,7 @@ public fun GenericHID.isPovButtonPressed(button: PovButton) = pov == button.angl
  * @param command the command to execute
  * @see JoystickButton.whenActive
  */
-public fun GenericHID.whenActive(button: Int, command: CommandBridgeMirror) {
+public fun GenericHID.whenActive(button: Int, command: CommandBase) {
     JoystickButton(this, button).whenActive(command.mirror)
 }
 
@@ -35,7 +35,7 @@ public fun GenericHID.whenActive(button: Int, command: CommandBridgeMirror) {
  * @param command the command to execute
  * @see JoystickButton.whileActive
  */
-public fun GenericHID.whileActive(button: Int, command: CommandBridgeMirror) {
+public fun GenericHID.whileActive(button: Int, command: CommandBase) {
     JoystickButton(this, button).whileActive(command.mirror)
 }
 
