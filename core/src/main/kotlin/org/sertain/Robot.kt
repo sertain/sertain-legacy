@@ -5,6 +5,7 @@ package org.sertain
 import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
+import org.sertain.command.Subsystem
 
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
@@ -143,7 +144,7 @@ public interface RobotLifecycle {
 }
 
 /** Base robot class which must be used for [RobotLifecycle] callbacks to work. */
-public abstract class Robot : IterativeRobot(), RobotLifecycle {
+public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), RobotLifecycle {
     private var mode = State.DISABLED
         set(value) {
             if (value != field) {
@@ -159,6 +160,8 @@ public abstract class Robot : IterativeRobot(), RobotLifecycle {
     init {
         @Suppress("LeakingThis") // Invoked through reflection and initialized later
         RobotLifecycle.rawAddListener(this)
+
+        subsystems.forEach { RobotLifecycle.addListener(it) }
 
         val existingHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->

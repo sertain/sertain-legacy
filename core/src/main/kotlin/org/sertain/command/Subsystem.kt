@@ -11,10 +11,5 @@ public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle {
     /** @see edu.wpi.first.wpilibj.command.Subsystem.setDefaultCommand */
     open val defaultCommand: CommandBase? = null
 
-    override fun initSendable(builder: SendableBuilder?) {
-        super.initSendable(builder)
-        RobotLifecycle.addListener(this)
-    }
-
     override fun initDefaultCommand() = setDefaultCommand(defaultCommand?.mirror)
 }
