@@ -9,31 +9,25 @@ import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
 import edu.wpi.first.wpilibj.command.Subsystem as WpiLibSubsystem
 
 /** @see CommandGroup.addSequential */
-public infix fun CommandBridgeMirror.then(command: CommandBridgeMirror) =
+public infix fun CommandBase.then(command: CommandBase) =
         CommandGroup().addSequential(this).addSequential(command)
 
 /** @see CommandGroup.addParallel */
-public infix fun CommandBridgeMirror.and(command: CommandBridgeMirror) =
+public infix fun CommandBase.and(command: CommandBase) =
         CommandGroup().addParallel(this).addParallel(command)
 
 /** @see CommandGroup.addSequential */
-public infix fun CommandGroup.then(command: CommandBridgeMirror) = addSequential(command)
+public infix fun CommandGroup.then(command: CommandBase) = addSequential(command)
 
 /** @see CommandGroup.addParallel */
-public infix fun CommandGroup.and(command: CommandBridgeMirror) = addParallel(command)
+public infix fun CommandGroup.and(command: CommandBase) = addParallel(command)
 
-public interface Requirable {
+public interface CanRequire {
     /** @see edu.wpi.first.wpilibj.command.Command.requires */
     fun requires(subsystem: Subsystem)
 }
 
-public interface CommandBridge : Requirable {
-    /** @see edu.wpi.first.wpilibj.command.Command.start */
-    fun start()
-
-    /** @see edu.wpi.first.wpilibj.command.Command.cancel */
-    fun cancel()
-
+public interface CommandLifecycle {
     /** @see edu.wpi.first.wpilibj.command.Command.initialize */
     fun onCreate() = Unit
 
@@ -44,22 +38,22 @@ public interface CommandBridge : Requirable {
     fun onDestroy() = Unit
 }
 
-public abstract class CommandBridgeMirror : CommandBridge {
+public abstract class CommandBase : CommandLifecycle, CanRequire {
     internal abstract val mirror: WpiLibCommand
 
     val isRunning get() = mirror.isRunning
     val isCanceled get() = mirror.isCanceled
     val isCompleted get() = mirror.isCompleted
 
-    override fun start() = mirror.start()
+    fun start() = mirror.start()
 
-    override fun cancel() = mirror.cancel()
+    fun cancel() = mirror.cancel()
 }
 
 /** @see edu.wpi.first.wpilibj.command.Command */
 public abstract class Command @JvmOverloads constructor(
         timeoutMillis: Long? = null
-) : CommandBridgeMirror() {
+) : CommandBase() {
     override val mirror = if (timeoutMillis == null || timeoutMillis <= 0) {
         CommandMirror(this)
     } else {
@@ -74,7 +68,7 @@ public abstract class PidCommand @JvmOverloads constructor(
         p: Double,
         i: Double = 0.0,
         d: Double = 0.0
-) : CommandBridgeMirror() {
+) : CommandBase() {
     override val mirror = PidCommandMirror(this, p, i, d)
 
     /**
@@ -108,7 +102,7 @@ public abstract class PidCommand @JvmOverloads constructor(
     public abstract fun returnPidInput(): Double
 }
 
-public class CommandGroup : CommandBridgeMirror() {
+public class CommandGroup : CommandBase() {
     private val _mirror = CommandGroupMirror(this)
     override val mirror by lazy {
         addQueuedCommands()
@@ -122,13 +116,13 @@ public class CommandGroup : CommandBridgeMirror() {
     override fun execute() = false
 
     /** @see edu.wpi.first.wpilibj.command.CommandGroup.addSequential */
-    public fun addSequential(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
+    public fun addSequential(command: CommandBase, timeout: Double? = null): CommandGroup {
         entries += Entry(true, command, timeout)
         return this
     }
 
     /** @see edu.wpi.first.wpilibj.command.CommandGroup.addParallel */
-    public fun addParallel(command: CommandBridgeMirror, timeout: Double? = null): CommandGroup {
+    public fun addParallel(command: CommandBase, timeout: Double? = null): CommandGroup {
         entries += Entry(false, command, timeout)
         return this
     }
@@ -184,7 +178,7 @@ public class CommandGroup : CommandBridgeMirror() {
     @VisibleForTesting
     internal data class Entry(
             val sequential: Boolean,
-            val command: CommandBridgeMirror,
+            val command: CommandBase,
             val timeout: Double? = null
     ) {
         inline val parallel get() = !sequential
