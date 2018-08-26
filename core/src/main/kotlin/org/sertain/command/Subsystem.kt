@@ -2,7 +2,6 @@
 @file:JvmName("SubsystemUtils")
 package org.sertain.command
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder
 import org.sertain.RobotLifecycle
 import edu.wpi.first.wpilibj.command.Subsystem as WpiLibSubsystem
 
@@ -10,11 +9,6 @@ import edu.wpi.first.wpilibj.command.Subsystem as WpiLibSubsystem
 public abstract class Subsystem : WpiLibSubsystem(), RobotLifecycle {
     /** @see edu.wpi.first.wpilibj.command.Subsystem.setDefaultCommand */
     open val defaultCommand: CommandBase? = null
-
-    override fun initSendable(builder: SendableBuilder?) {
-        super.initSendable(builder)
-        RobotLifecycle.addListener(this)
-    }
 
     override fun initDefaultCommand() = setDefaultCommand(defaultCommand?.mirror)
 }
