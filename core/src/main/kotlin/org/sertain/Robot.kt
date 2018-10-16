@@ -133,7 +133,7 @@ public interface RobotLifecycle {
 }
 
 /** Base robot class which must be used for [RobotLifecycle] callbacks to work. */
-public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), RobotLifecycle {
+public abstract class Robot(vararg listeners: RobotLifecycle) : IterativeRobot(), RobotLifecycle {
     private var mode = State.DISABLED
         set(value) {
             if (value != field) {
@@ -150,7 +150,7 @@ public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), Ro
         @Suppress("LeakingThis") // Invoked through reflection and initialized later
         add(this)
 
-        subsystems.forEach { add(it) }
+        listeners.forEach { add(it) }
 
         val existingHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
