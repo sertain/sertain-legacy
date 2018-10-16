@@ -80,7 +80,7 @@ public interface RobotLifecycle {
         @VisibleForTesting
         internal val listeners = mutableSetOf<RobotLifecycle>()
 
-        internal fun rawAddListener(lifecycle: RobotLifecycle) {
+        internal fun add(lifecycle: RobotLifecycle) {
             listeners += lifecycle
         }
 
@@ -89,16 +89,6 @@ public interface RobotLifecycle {
          *
          * @param lifecycle the lifecycle object to receive callbacks
          */
-        public fun addListener(lifecycle: RobotLifecycle) {
-            lifecycle.onCreate()
-            when (state) {
-                Robot.State.TELEOP -> lifecycle.onTeleopStart()
-                Robot.State.AUTO -> lifecycle.onAutoStart()
-                Robot.State.DISABLED -> Unit
-            }
-
-            synchronized(listeners) { listeners += lifecycle }
-        }
 
         /**
          * Removes a listener for [RobotLifecycle] events.
@@ -159,9 +149,9 @@ public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), Ro
 
     init {
         @Suppress("LeakingThis") // Invoked through reflection and initialized later
-        RobotLifecycle.rawAddListener(this)
+        RobotLifecycle.add(this)
 
-        subsystems.forEach { RobotLifecycle.addListener(it) }
+        subsystems.forEach { RobotLifecycle.add(it) }
 
         val existingHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
