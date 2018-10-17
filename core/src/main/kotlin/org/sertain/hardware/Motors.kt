@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
 import edu.wpi.first.wpilibj.PWMSpeedController
 import org.sertain.RobotLifecycle
+import org.sertain.add
 import org.sertain.hardware.BreakWhenStarted.minusAssign
 import org.sertain.hardware.BreakWhenStarted.plusAssign
 import java.util.Timer
@@ -149,7 +150,7 @@ private object BreakWhenStarted : RobotLifecycle {
     private var updateTask: TimerTask? = null
 
     init {
-        RobotLifecycle.addListener(this)
+        add(this)
     }
 
     operator fun BreakWhenStarted.plusAssign(talon: Talon) {
