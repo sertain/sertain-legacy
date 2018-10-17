@@ -17,7 +17,7 @@ class RobotTest {
 
     @After
     fun afterEach() {
-        RobotLifecycle.removeListener(testLifecycle)
+        -testLifecycle
     }
 
     @Test

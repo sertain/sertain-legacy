@@ -5,7 +5,6 @@ package org.sertain
 import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
-import org.sertain.command.Subsystem
 
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
@@ -85,8 +84,8 @@ public interface RobotLifecycle {
          *
          * @param lifecycle the lifecycle object to receive callbacks
          */
-        private fun add(lifecycle: RobotLifecycle) {
-            listeners += lifecycle
+        internal fun addListener(lifecycle: RobotLifecycle) {
+            synchronized(listeners) { listeners += lifecycle }
         }
 
         /**
@@ -196,7 +195,13 @@ public abstract class Robot(vararg listeners: RobotLifecycle) : IterativeRobot()
 }
 
 public fun add(lifecycle: RobotLifecycle) {
-    RobotLifecycle.listeners += lifecycle
+    RobotLifecycle.addListener(lifecycle)
 }
 
 public operator fun RobotLifecycle.unaryPlus() = add(this)
+
+public fun remove(lifecycle: RobotLifecycle) {
+    RobotLifecycle.removeListener(lifecycle)
+}
+
+public operator fun RobotLifecycle.unaryMinus() = remove(this)
