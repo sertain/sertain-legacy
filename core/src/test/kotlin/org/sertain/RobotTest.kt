@@ -12,7 +12,7 @@ class RobotTest {
 
     @Before
     fun beforeEach() {
-        RobotLifecycle.add(testLifecycle)
+        +testLifecycle
     }
 
     @After
