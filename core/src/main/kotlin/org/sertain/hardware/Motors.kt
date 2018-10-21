@@ -8,8 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
 import edu.wpi.first.wpilibj.PWMSpeedController
 import org.sertain.RobotLifecycle
-import org.sertain.hardware.BreakWhenStarted.minusAssign
-import org.sertain.hardware.BreakWhenStarted.plusAssign
+import org.sertain.hardware.BrakeWhenStarted.minusAssign
+import org.sertain.hardware.BrakeWhenStarted.plusAssign
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.ConcurrentHashMap
@@ -88,29 +88,29 @@ public fun Talon.getEncoderVelocity(sensor: FeedbackDevice = FeedbackDevice.Quad
 /**
  * Sets the [Talon]'s current mode between either Brake or Coast.
  *
- * @param enable whether break mode should be enabled
+ * @param enable whether brake mode should be enabled
  * @return the original Talon
  */
 @JvmOverloads
-public fun Talon.setBreak(enable: Boolean = true) = apply {
+public fun Talon.setBrake(enable: Boolean = true) = apply {
     setNeutralMode(if (enable) NeutralMode.Brake else NeutralMode.Coast)
 }
 
 /**
- * Sets the Talon to use Auto Break mode.
+ * Sets the Talon to use Auto Brake mode.
  *
  * @return the original Talon
- * @see BreakWhenStarted
+ * @see BrakeWhenStarted
  */
-public fun Talon.autoBreak() = apply { BreakWhenStarted += this }
+public fun Talon.autoBrake() = apply { BrakeWhenStarted += this }
 
 /**
- * Sets the Talon to break only when you explicitly use [setBreak].
+ * Sets the Talon to brake only when you explicitly use [setBrake].
  *
  * @return the original Talon
- * @see BreakWhenStarted
+ * @see BrakeWhenStarted
  */
-public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
+public fun Talon.manualBrake() = apply { BrakeWhenStarted -= this }
 
 /**
  * Sets whether the Talon should be inverted.
@@ -138,13 +138,13 @@ public fun Talon.stop() = apply { stopMotor() }
 public fun PWMSpeedController.invert(inverted: Boolean = true) = apply { setInverted(inverted) }
 
 /**
- * Puts all specified talons in break mode when the robot is enabled in either teleop or autonomous
- * mode, and will disable break mode 5 seconds after the robot is disabled in order to allow the
+ * Puts all specified talons in brake mode when the robot is enabled in either teleop or autonomous
+ * mode, and will disable brake mode 5 seconds after the robot is disabled in order to allow the
  * robot to be pushed around on the field.
  *
- * @see autoBreak
+ * @see autoBrake
  */
-private object BreakWhenStarted : RobotLifecycle {
+private object BrakeWhenStarted : RobotLifecycle {
     private val talons = mutableSetOf<Talon>()
     private var updateTask: TimerTask? = null
 
@@ -152,11 +152,11 @@ private object BreakWhenStarted : RobotLifecycle {
         RobotLifecycle.addListener(this)
     }
 
-    operator fun BreakWhenStarted.plusAssign(talon: Talon) {
+    operator fun BrakeWhenStarted.plusAssign(talon: Talon) {
         synchronized(talons) { talons += talon }
     }
 
-    operator fun BreakWhenStarted.minusAssign(talon: Talon) {
+    operator fun BrakeWhenStarted.minusAssign(talon: Talon) {
         synchronized(talons) { talons -= talon }
     }
 
@@ -169,7 +169,7 @@ private object BreakWhenStarted : RobotLifecycle {
         updateTask = Timer().schedule(TimeUnit.SECONDS.toMillis(5)) { set(false) }
     }
 
-    private fun set(`break`: Boolean) {
-        synchronized(talons) { for (talon in talons) talon.setBreak(`break`) }
+    private fun set(`brake`: Boolean) {
+        synchronized(talons) { for (talon in talons) talon.setBrake(`brake`) }
     }
 }
