@@ -113,6 +113,54 @@ public fun Talon.autoBreak() = apply { BreakWhenStarted += this }
 public fun Talon.manualBreak() = apply { BreakWhenStarted -= this }
 
 /**
+ * Sets the [Talon]'s current kP value.
+ *
+ * @param value the kP value
+ * @return the original Talon
+ */
+@JvmOverloads
+public fun Talon.setP(value: Double, timeoutMillis: Int = 1000) = apply {
+    config_kP(0, value, timeoutMillis)
+}
+
+/**
+ * Sets the [Talon]'s current kI value.
+ *
+ * @param value the kI value
+ * @return the original Talon
+ */
+@JvmOverloads
+public fun Talon.setI(value: Double, timeoutMillis: Int = 1000) = apply {
+    config_kI(0, value, timeoutMillis)
+}
+
+/**
+ * Sets the [Talon]'s current kD value.
+ *
+ * @param value the kD value
+ * @return the original Talon
+ */
+@JvmOverloads
+public fun Talon.setD(value: Double, timeoutMillis: Int = 1000) = apply {
+    config_kD(0, value, timeoutMillis)
+}
+
+/**
+ * Sets the [Talon]'s current kP, kI and kD values.
+ *
+ * @param kP the kP value
+ * @param kI the kI value
+ * @param kD the kD value
+ * @return the original Talon
+ */
+@JvmOverloads
+public fun Talon.setPID(kP: Double, kI: Double, kD: Double, timeoutMillis: Int = 1000) = apply {
+    setP(kP, timeoutMillis)
+    setI(kI, timeoutMillis)
+    setD(kD, timeoutMillis)
+}
+
+/**
  * Sets whether the Talon should be inverted.
  *
  * @param inverted whether the Talon should be inverted
