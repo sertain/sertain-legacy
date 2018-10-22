@@ -169,7 +169,7 @@ private object BrakeWhenStarted : RobotLifecycle {
         updateTask = Timer().schedule(TimeUnit.SECONDS.toMillis(5)) { set(false) }
     }
 
-    private fun set(`brake`: Boolean) {
-        synchronized(talons) { for (talon in talons) talon.setBrake(`brake`) }
+    private fun set(brake: Boolean) {
+        synchronized(talons) { for (talon in talons) talon.setBrake(brake) }
     }
 }
