@@ -12,12 +12,12 @@ class RobotTest {
 
     @Before
     fun beforeEach() {
-        RobotLifecycle.addListener(testLifecycle)
+        +testLifecycle
     }
 
     @After
     fun afterEach() {
-        RobotLifecycle.removeListener(testLifecycle)
+        -testLifecycle
     }
 
     @Test
