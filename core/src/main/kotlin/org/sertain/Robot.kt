@@ -194,12 +194,18 @@ public abstract class Robot(vararg listeners: RobotLifecycle) : IterativeRobot()
     }
 }
 
+/**
+ * @see RobotLifecycle.addListener
+ */
 public fun add(lifecycle: RobotLifecycle) {
     RobotLifecycle.addListener(lifecycle)
 }
 
 public operator fun RobotLifecycle.unaryPlus() = add(this)
 
+/**
+ * @see RobotLifecycle.removeListener
+ */
 public fun remove(lifecycle: RobotLifecycle) {
     RobotLifecycle.removeListener(lifecycle)
 }
