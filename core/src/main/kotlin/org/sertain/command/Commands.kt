@@ -48,6 +48,16 @@ public abstract class CommandBase : CommandLifecycle, CanRequire {
     fun start() = mirror.start()
 
     fun cancel() = mirror.cancel()
+
+    /**
+     * Executes the given command after a [condition] is met.
+     *
+     * @param condition the lambda which returns whether the command is ready to be run
+     * @return a [CommandGroup] which runs the calling command after the condition is met
+     */
+    public fun waitUntil(condition: () -> Boolean) = object : Command() {
+        override fun execute() = condition()
+    } then this
 }
 
 /** @see edu.wpi.first.wpilibj.command.Command */
