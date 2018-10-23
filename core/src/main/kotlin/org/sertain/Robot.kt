@@ -5,7 +5,6 @@ package org.sertain
 import android.support.annotation.VisibleForTesting
 import edu.wpi.first.wpilibj.IterativeRobot
 import edu.wpi.first.wpilibj.command.Scheduler
-import org.sertain.command.Subsystem
 
 private typealias LifecycleDistributor = RobotLifecycle.Companion.Distributor
 
@@ -80,23 +79,12 @@ public interface RobotLifecycle {
         @VisibleForTesting
         internal val listeners = mutableSetOf<RobotLifecycle>()
 
-        internal fun rawAddListener(lifecycle: RobotLifecycle) {
-            listeners += lifecycle
-        }
-
         /**
          * Adds a listener for [RobotLifecycle] events.
          *
          * @param lifecycle the lifecycle object to receive callbacks
          */
-        public fun addListener(lifecycle: RobotLifecycle) {
-            lifecycle.onCreate()
-            when (state) {
-                Robot.State.TELEOP -> lifecycle.onTeleopStart()
-                Robot.State.AUTO -> lifecycle.onAutoStart()
-                Robot.State.DISABLED -> Unit
-            }
-
+        internal fun addListener(lifecycle: RobotLifecycle) {
             synchronized(listeners) { listeners += lifecycle }
         }
 
@@ -144,7 +132,7 @@ public interface RobotLifecycle {
 }
 
 /** Base robot class which must be used for [RobotLifecycle] callbacks to work. */
-public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), RobotLifecycle {
+public abstract class Robot(vararg listeners: RobotLifecycle) : IterativeRobot(), RobotLifecycle {
     private var mode = State.DISABLED
         set(value) {
             if (value != field) {
@@ -159,9 +147,9 @@ public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), Ro
 
     init {
         @Suppress("LeakingThis") // Invoked through reflection and initialized later
-        RobotLifecycle.rawAddListener(this)
+        add(this)
 
-        subsystems.forEach { RobotLifecycle.addListener(it) }
+        listeners.forEach { add(it) }
 
         val existingHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
@@ -205,3 +193,21 @@ public abstract class Robot(vararg subsystems: Subsystem) : IterativeRobot(), Ro
         DISABLED, AUTO, TELEOP
     }
 }
+
+/**
+ * @see RobotLifecycle.addListener
+ */
+public fun add(lifecycle: RobotLifecycle) {
+    RobotLifecycle.addListener(lifecycle)
+}
+
+public operator fun RobotLifecycle.unaryPlus() = add(this)
+
+/**
+ * @see RobotLifecycle.removeListener
+ */
+public fun remove(lifecycle: RobotLifecycle) {
+    RobotLifecycle.removeListener(lifecycle)
+}
+
+public operator fun RobotLifecycle.unaryMinus() = remove(this)
