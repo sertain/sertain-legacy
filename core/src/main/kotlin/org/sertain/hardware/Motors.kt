@@ -147,18 +147,37 @@ public fun Talon.setD(value: Double, timeoutMillis: Int = 1000) = apply {
 }
 
 /**
- * Sets the [Talon]'s current kP, kI and kD values.
+ * Sets the [Talon]'s current kF value.
+ *
+ * @param value the kF value
+ * @return the original Talon
+ */
+@JvmOverloads
+public fun Talon.setF(value: Double, timeoutMillis: Int = 1000) = apply {
+    config_kF(0, value, timeoutMillis)
+}
+
+/**
+ * Sets the [Talon]'s current kP, kI, kD and kF values.
  *
  * @param kP the kP value
  * @param kI the kI value
  * @param kD the kD value
+ * @param kF the kF value
  * @return the original Talon
  */
 @JvmOverloads
-public fun Talon.setPID(kP: Double, kI: Double, kD: Double, timeoutMillis: Int = 1000) = apply {
+public fun Talon.setPIDF(
+        kP: Double = 0.0,
+        kI: Double = 0.0,
+        kD: Double = 0.0,
+        kF: Double = 0.0,
+        timeoutMillis: Int = 1000
+) = apply {
     setP(kP, timeoutMillis)
     setI(kI, timeoutMillis)
     setD(kD, timeoutMillis)
+    setF(kF, timeoutMillis)
 }
 
 /**
