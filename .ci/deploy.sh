@@ -11,7 +11,7 @@ fi
 
 # Upload docs
 cd ..
-git clone --branch=master "https://SUPERCILEX:${GIT_LOGIN}@github.com/sertain/javadocs.git" javadocs
+git clone --branch=master "https://sertbot:${GIT_LOGIN}@github.com/sertain/javadocs.git" javadocs
 
 git config --global user.name "Travis CI"
 git config --global user.email "social@sert2521.org"
