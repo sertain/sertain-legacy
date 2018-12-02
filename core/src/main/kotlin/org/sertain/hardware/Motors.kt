@@ -3,6 +3,7 @@
 package org.sertain.hardware
 
 import com.ctre.phoenix.motorcontrol.ControlMode
+import com.ctre.phoenix.motorcontrol.DemandType
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX
@@ -85,6 +86,73 @@ public fun Talon.setEncoderPosition(
 @JvmOverloads
 public fun Talon.getEncoderVelocity(sensor: FeedbackDevice = FeedbackDevice.QuadEncoder): Int =
         getSelectedSensorVelocity(sensor.value)
+
+/**
+ * Sets the [Talon] output to [percent].
+ *
+ * @param percent the percent output of the motor
+ */
+public fun Talon.setPercent(percent: Double) = this.set(ControlMode.PercentOutput, percent)
+
+/**
+ * Sets the target [Talon] position to [position].
+ *
+ * @param position the target motor position
+ * @param feedForward the feedForward value, if any, to pass to the control loop
+ */
+@JvmOverloads
+public fun Talon.setPosition(position: Double, feedForward: Double? = null) {
+    if (feedForward == null) {
+        this.set(ControlMode.Position, position)
+    } else {
+        this.set(ControlMode.Position, position, DemandType.ArbitraryFeedForward, feedForward)
+    }
+}
+
+/**
+ * Sets the target [Talon] velocity to [velocity].
+ *
+ * @param velocity the target motor velocity
+ * @param feedForward the feedForward value, if any, to pass to the control loop
+ */
+@JvmOverloads
+public fun Talon.setVelocity(velocity: Double, feedForward: Double? = null) {
+    if (feedForward == null) {
+        this.set(ControlMode.Velocity, velocity)
+    } else {
+        this.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedForward)
+    }
+}
+
+/**
+ * Sets the target [Talon] current to [current].
+ *
+ * @param velocity the target motor current
+ * @param feedForward the feedForward value, if any, to pass to the control loop
+ */
+@JvmOverloads
+public fun Talon.setCurrent(current: Double, feedForward: Double? = null) {
+    if (feedForward == null) {
+        this.set(ControlMode.Current, current)
+    } else {
+        this.set(ControlMode.Current, current, DemandType.ArbitraryFeedForward, feedForward)
+    }
+}
+
+/**
+ * Sets the target [Talon] position to [position] using MotionMagic.
+ *
+ * @param position the target motor position
+ * @param feedForward the feedForward value, if any, to pass to the control loop
+ */
+@JvmOverloads
+public fun Talon.setMotionMagic(position: Double, feedForward: Double? = null) {
+    if (feedForward == null) {
+        this.set(ControlMode.MotionMagic, position)
+    } else {
+        this.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, feedForward)
+    }
+}
 
 /**
  * Sets the [Talon]'s current mode between either Brake or Coast.
