@@ -3,6 +3,8 @@
 package org.sertain.command
 
 import android.support.annotation.VisibleForTesting
+import edu.wpi.first.wpilibj.Sendable
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder
 import edu.wpi.first.wpilibj.command.Command as WpiLibCommand
 import edu.wpi.first.wpilibj.command.CommandGroup as WpiLibCommandGroup
 import edu.wpi.first.wpilibj.command.PIDCommand as WpiLibPidCommand
@@ -38,16 +40,48 @@ public interface CommandLifecycle {
     fun onDestroy() = Unit
 }
 
-public abstract class CommandBase : CommandLifecycle, CanRequire {
+public abstract class CommandBase : CommandLifecycle, CanRequire, Sendable {
     internal abstract val mirror: WpiLibCommand
+
+    val group: WpiLibCommandGroup? get() = mirror.group
 
     val isRunning get() = mirror.isRunning
     val isCanceled get() = mirror.isCanceled
     val isCompleted get() = mirror.isCompleted
+    val isParented get() = group != null
 
     fun start() = mirror.start()
 
     fun cancel() = mirror.cancel()
+
+    override fun setName(name: String?) {
+        mirror.name = name
+    }
+
+    override fun getName() = mirror.name
+
+    override fun setSubsystem(subsystem: String?) {
+        mirror.subsystem = subsystem
+    }
+
+    override fun getSubsystem() = mirror.subsystem
+
+    override fun initSendable(builder: SendableBuilder?) {
+        builder?.setSmartDashboardType("Command")
+        builder?.addStringProperty(".name", { name }, null)
+        builder?.addBooleanProperty(".isParented", { isParented }, null)
+        builder?.addBooleanProperty("running", { isRunning }, { value ->
+            if (value) {
+                if (!isRunning) {
+                    start()
+                }
+            } else {
+                if (isRunning) {
+                    cancel()
+                }
+            }
+        })
+    }
 
     /**
      * Executes the given command after a [condition] is met.
