@@ -1,5 +1,5 @@
 @file:Suppress("unused", "RedundantVisibilityModifier")
-@file:JvmName("Inputs")
+@file:JvmName("DigitalInput")
 package org.sertain.hardware
 
 import edu.wpi.first.wpilibj.DigitalInput as WpiLibDigitalInput

@@ -198,8 +198,7 @@ public class CommandGroup : CommandBase() {
         for (entry in entries.toList()) {
             val prevIndex = entries.indexOf(entry) - 1
             val isLastParallel = entries.last() === entry && entry.parallel
-            if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true
-                    || isLastParallel) {
+            if (entry.sequential && entries.getOrNull(prevIndex)?.parallel == true || isLastParallel) {
                 val endIndex = prevIndex + if (isLastParallel) 1 else 0
                 // Walk back up the stack to find all linear parallel commands
                 for ((trace, prev) in entries.slice(0..endIndex).reversed().withIndex()) {
