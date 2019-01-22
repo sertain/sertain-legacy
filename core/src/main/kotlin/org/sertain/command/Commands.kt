@@ -41,7 +41,7 @@ public interface CommandLifecycle {
 }
 
 public abstract class CommandBase : CommandLifecycle, CanRequire, Sendable {
-    internal abstract val mirror: WpiLibCommand
+    abstract val mirror: WpiLibCommand
 
     val group: WpiLibCommandGroup? get() = mirror.group
 
