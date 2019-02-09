@@ -41,7 +41,7 @@ public interface CommandLifecycle {
 }
 
 public abstract class CommandBase : CommandLifecycle, CanRequire, Sendable {
-    internal abstract val mirror: WpiLibCommand
+    abstract val mirror: WpiLibCommand
 
     val group: WpiLibCommandGroup? get() = mirror.group
 
@@ -229,7 +229,7 @@ public class CommandGroup : CommandBase() {
 }
 
 /** A mirror of WPILib's Command class. */
-internal class CommandMirror : WpiLibCommand {
+class CommandMirror : WpiLibCommand {
     private val command: Command
 
     constructor(command: Command) : super() {
@@ -253,7 +253,7 @@ internal class CommandMirror : WpiLibCommand {
 }
 
 /** A mirror of WPILib's PIDCommand class. */
-internal class PidCommandMirror(
+class PidCommandMirror(
         private val command: PidCommand,
         p: Double,
         i: Double,
@@ -290,7 +290,7 @@ internal class PidCommandMirror(
 }
 
 /** A mirror of WPILib's CommandGroup class. */
-internal class CommandGroupMirror(private val command: CommandGroup) : WpiLibCommandGroup() {
+class CommandGroupMirror(private val command: CommandGroup) : WpiLibCommandGroup() {
     @Suppress("RedundantOverride") // Needed for visibility override
     public override fun requires(subsystem: WpiLibSubsystem) = super.requires(subsystem)
 
