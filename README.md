@@ -26,6 +26,8 @@
   </a>
 </p>
 
+***Sertain legacy is no longer supported. Check out the new version [here](https://github.com/SouthEugeneRoboticsTeam/sertain)!***
+
 ## Installation
 
 Sertain is hosted on JitPack and only available through the Gradle build system. First, add JitPack
